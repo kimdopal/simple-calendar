@@ -1,4 +1,4 @@
-package com.ksw.sample_calender;
+package com.ksw.simple_calender;
 
 import android.content.Context;
 
