@@ -38,8 +38,8 @@ public class SimpleCalenderLayout extends ViewGroup {
             }
         }
 
-        maxWidth += getPaddingLeft() + getPaddingRight();
-        maxHeight += getPaddingTop() + getPaddingBottom();
+        maxWidth = getPaddingLeft() + getPaddingRight();
+        maxHeight = getPaddingTop() + getPaddingBottom();
         Drawable drawable = getBackground();
         if (drawable != null) {
             maxHeight = Math.max(maxHeight, drawable.getMinimumHeight());
@@ -54,13 +54,14 @@ public class SimpleCalenderLayout extends ViewGroup {
     protected void onLayout(boolean bChanged, int l, int t, int r, int b) {
         int count = super.getChildCount();
         for (int i = 0; i < count; i++) {
-            final View child = getChildAt(i);
+            View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
-                int childLeft = getPaddingLeft();
-                int childTop = getPaddingTop();
-                child.layout(childLeft, childTop,
-                        childLeft + child.getMeasuredWidth(),
-                        childTop + child.getMeasuredHeight());
+                int left = getPaddingLeft();
+                int top = getPaddingTop();
+                child.layout(left,
+                        top,
+                            left + child.getMeasuredWidth(),
+                            top + child.getMeasuredHeight());
             }
         }
     }
@@ -68,6 +69,8 @@ public class SimpleCalenderLayout extends ViewGroup {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
+
     }
 
     @Override
