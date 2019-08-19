@@ -12,11 +12,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
+import static java.lang.Math.min;
+
 public class  SimpleCalenderView extends View {
     Paint m_paint;
     float m_width;
     float m_height;
     float m_weekHeight;
+
+    static final int WEEK = 7;
+    static final float EVENT_GAP = 30.0f;
 
     public SimpleCalenderView(Context context) {
         super(context);
@@ -98,16 +103,58 @@ public class  SimpleCalenderView extends View {
             }
         }
 
-        drawSchedule(canvas);
+        drawSchedule(canvas, year, month, day, last);
     }
 
-    private void drawSchedule(Canvas canvas) {
+    private void drawSchedule(Canvas canvas, int year, int month, int day, int last) {
+        DateEventManager mngr = DateEventManager.getInstance();
+
+        // week
+        int startWeek = 1;
+        int endWeek = WEEK - day;
+        for (int i= 0; i < 5; ++i) {
+            DateAttr sWeek = new DateAttr(year + 1900, month + 1, startWeek, 0, 0);
+            DateAttr eWeek = new DateAttr(year + 1900, month + 1, endWeek, 23, 59);
+
+            ArrayList<DateEvent> ret = mngr.rangeCutEvent(sWeek.getDateTime(), eWeek.getDateTime());
+
+            for (DateEvent e : ret) {
+                int startEventWeek;
+                int endEventWeek;
+
+                if (i == 0) {
+                    startEventWeek = day + e.getStart().getDay();
+                    endEventWeek = day + e.getEnd().getDay();
+                }
+                else{
+                    startEventWeek = e.getStart().getDay() - startWeek;
+                    endEventWeek = e.getEnd().getDay() - startWeek;
+                }
+
+                drawScheduleLine(canvas, i, startEventWeek, endEventWeek);
+            }
+
+            startWeek = endWeek + 1;
+            if (startWeek > last) break;
+            endWeek += 7;
+            endWeek = min(endWeek, last);
+        }
+
+        //
+    }
+
+    private void drawScheduleLine(Canvas canvas, int i, int startEventWeek, int endEventWeek) {
+        float dayWidth = m_width / 7;
+        float dayHeight = (m_height - m_weekHeight) / 5;
+
+        float tempStartX = dayWidth * startEventWeek;
+        float tempEndX = dayWidth * (endEventWeek + 1);
+        float tempY = dayHeight * i + EVENT_GAP;
+
         m_paint.setColor(Color.BLUE);
-        RectF rect = new RectF(40, 40, 110, 110);
+        RectF rect = new RectF(tempStartX, tempY + m_weekHeight, tempEndX, tempY + m_weekHeight + EVENT_GAP);
         canvas.drawRoundRect(rect, 10, 10, m_paint);
 
-        // 나름의 규칙이 필요함
-        //drawScheduleLine(Canvas canvas, );
     }
 
     private void drawMarkNumber(Canvas canvas, int y, int x) {

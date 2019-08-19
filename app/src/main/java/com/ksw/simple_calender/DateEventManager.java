@@ -13,7 +13,7 @@ public class DateEventManager {
 
     private DateEventManager(){}
 
-    DateEventManager getInstance(){
+    public static DateEventManager getInstance(){
         if (inst == null) {
             inst = new DateEventManager();
         }
@@ -22,6 +22,7 @@ public class DateEventManager {
     }
 
     void init(Context context){
+        eventList = new ArrayList<DateEvent>();
         dbHelper = new CalenderDBHelper(context, "calendar.db", null, 1);
     }
 
@@ -50,17 +51,17 @@ public class DateEventManager {
         for (DateEvent e: eventList) {
             if (e.getEnd().getDateTime() < sdate)continue;
             if (e.getStart().getDateTime() > edate) continue;
-            /*
-            int start = max(sday, e.getStart().getDay());
-            int end = min(eday, e.getEnd().getDay());
+
+            long start = max(sdate, e.getStart().getDateTime());
+            long end = min(edate, e.getEnd().getDateTime());
 
             DateEvent newEvent = new DateEvent(e.getTitle(),
                     e.getContent(),
                     e.isbRepeat(),
-                    start, end);
+                    new DateAttr(start),
+                    new DateAttr(end));
 
             ret.add(newEvent);
-            */
         }
 
         return ret;

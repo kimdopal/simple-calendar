@@ -12,7 +12,15 @@ public class DateEvent {
     private DateAttr start;
     private DateAttr end;
 
-    Color color;
+    private Color color;
+
+    DateEvent(String title, String content, boolean bRepeat, DateAttr s, DateAttr e) {
+        this.title = title;
+        this.content = content;
+        this.bRepeat = bRepeat;
+        this.start = s;
+        this.end = e;
+    }
 
     public String getTitle() {
         return title;
@@ -60,13 +68,5 @@ public class DateEvent {
 
     public void setColor(Color color) {
         this.color = color;
-    }
-
-    DateEvent(String title, String content, boolean bRepeat, DateAttr s, DateAttr e) {
-        this.title = title;
-        this.content = content;
-        this.bRepeat = bRepeat;
-        this.start = s;
-        this.end = e;
     }
 }

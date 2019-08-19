@@ -8,6 +8,26 @@ public class DateAttr {
     int hour;
     int minute;
 
+    DateAttr(int year, int mouth, int day, int hour, int minute){
+        this.year = year;
+        this.mouth = mouth;
+        this.day = day;
+        this.hour = hour;
+        this.minute = minute;
+    }
+
+    DateAttr(long dateTime) {
+        this.minute = (int)(dateTime % 100);
+        dateTime /= 100;
+        this.hour = (int)(dateTime % 100);
+        dateTime /= 100;
+        this.day = (int)(dateTime % 100);
+        dateTime /= 100;
+        this.mouth = (int)(dateTime % 100);
+        dateTime /= 100;
+        this.year = (int)dateTime;
+    }
+
     public int getMouth() {
         return mouth;
     }
@@ -50,6 +70,6 @@ public class DateAttr {
 
     public long getDateTime()
     {
-        return year * 10000000 + mouth * 100000 + day * 1000 + hour * 10 + minute;
+        return (long)year * 100000000 + mouth * 1000000 + day * 10000 + hour * 100 + minute;
     }
 }
