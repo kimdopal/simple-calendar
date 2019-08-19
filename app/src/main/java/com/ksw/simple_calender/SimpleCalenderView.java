@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 
-public class SimpleCalenderView extends View {
+public class  SimpleCalenderView extends View {
     Paint m_paint;
     float m_width;
     float m_height;
@@ -37,11 +37,9 @@ public class SimpleCalenderView extends View {
             m_paint = new Paint();
         }
 
-
         m_width = getWidth();
         m_height = getHeight();
         m_weekHeight = getHeight() / 20;
-
 
         drawCalenderBackLine(canvas);
         drawWeekText(canvas);
