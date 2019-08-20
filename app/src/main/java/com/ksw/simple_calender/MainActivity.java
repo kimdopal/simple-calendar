@@ -19,5 +19,9 @@ public class MainActivity extends AppCompatActivity {
         DateAttr endAttr = new DateAttr(201908231430L);
         DateEvent e = new DateEvent("메롱", "ㅎㅎ", false, startAttr, endAttr);
         mngr.addEvent(e);
+        DateEvent e1 = new DateEvent("메롱", "ㅎㅎ", false, startAttr, endAttr);
+        mngr.addEvent(e);
+        DateEvent e2 = new DateEvent("메롱", "ㅎㅎ", false, startAttr, endAttr);
+        mngr.addEvent(e);
     }
 }

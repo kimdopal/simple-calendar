@@ -14,7 +14,7 @@ import java.util.Date;
 
 import static java.lang.Math.min;
 
-public class  SimpleCalenderView extends View {
+public class SimpleCalenderView extends View {
     Paint m_paint;
     float m_width;
     float m_height;
@@ -22,6 +22,8 @@ public class  SimpleCalenderView extends View {
 
     static final int WEEK = 7;
     static final float EVENT_GAP = 30.0f;
+    static final int ITEM_SIZE = 7;
+    boolean[][] weekList = null;
 
     public SimpleCalenderView(Context context) {
         super(context);
@@ -40,6 +42,10 @@ public class  SimpleCalenderView extends View {
         super.onDraw(canvas);
         if (m_paint == null) {
             m_paint = new Paint();
+        }
+
+        if (weekList == null) {
+            weekList = new boolean[WEEK][ITEM_SIZE];
         }
 
         m_width = getWidth();
@@ -113,6 +119,10 @@ public class  SimpleCalenderView extends View {
         int startWeek = 1;
         int endWeek = WEEK - day;
         for (int i= 0; i < 5; ++i) {
+            for (int j = 0; j < 7; ++j) {
+                Arrays.fill(weekList[j], false);
+            }
+
             DateAttr sWeek = new DateAttr(year + 1900, month + 1, startWeek, 0, 0);
             DateAttr eWeek = new DateAttr(year + 1900, month + 1, endWeek, 23, 59);
 
@@ -121,7 +131,6 @@ public class  SimpleCalenderView extends View {
             for (DateEvent e : ret) {
                 int startEventWeek;
                 int endEventWeek;
-
                 if (i == 0) {
                     startEventWeek = day + e.getStart().getDay();
                     endEventWeek = day + e.getEnd().getDay();
@@ -131,7 +140,8 @@ public class  SimpleCalenderView extends View {
                     endEventWeek = e.getEnd().getDay() - startWeek;
                 }
 
-                drawScheduleLine(canvas, i, startEventWeek, endEventWeek);
+                int pos = getWeekPos(startEventWeek, endEventWeek);
+                drawScheduleLine(canvas, i, pos, startEventWeek, endEventWeek, e);
             }
 
             startWeek = endWeek + 1;
@@ -139,22 +149,45 @@ public class  SimpleCalenderView extends View {
             endWeek += 7;
             endWeek = min(endWeek, last);
         }
-
-        //
     }
 
-    private void drawScheduleLine(Canvas canvas, int i, int startEventWeek, int endEventWeek) {
+    private int getWeekPos(int startEventWeek, int endEventWeek) {
+        for (int i = 0; i < ITEM_SIZE; ++i) {
+            boolean isPos = false;
+            for (int j = startEventWeek; j < endEventWeek; ++j) {
+                if (weekList[j][i]) {
+                    isPos = true;
+                    break;
+                }
+            }
+
+            if (!isPos) {
+                for (int j = startEventWeek; j < endEventWeek; ++j) {
+                    weekList[j][i] = true;
+                }
+
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+
+    private void drawScheduleLine(Canvas canvas, int weekIndex, int pos, int startEventWeek, int endEventWeek, DateEvent e) {
         float dayWidth = m_width / 7;
         float dayHeight = (m_height - m_weekHeight) / 5;
 
         float tempStartX = dayWidth * startEventWeek;
         float tempEndX = dayWidth * (endEventWeek + 1);
-        float tempY = dayHeight * i + EVENT_GAP;
+        float tempY = dayHeight * weekIndex + EVENT_GAP * (pos + 1);
 
         m_paint.setColor(Color.BLUE);
         RectF rect = new RectF(tempStartX, tempY + m_weekHeight, tempEndX, tempY + m_weekHeight + EVENT_GAP);
         canvas.drawRoundRect(rect, 10, 10, m_paint);
-
+        m_paint.setTextAlign(Paint.Align.LEFT);
+        m_paint.setColor(Color.WHITE);
+        canvas.drawText(e.getTitle(), tempStartX, tempY + m_weekHeight + EVENT_GAP, m_paint);
     }
 
     private void drawMarkNumber(Canvas canvas, int y, int x) {

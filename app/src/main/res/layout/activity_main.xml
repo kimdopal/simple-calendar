@@ -30,6 +30,4 @@
         </FrameLayout>
 
     </com.ksw.simple_calender.SimpleCalenderLayout>
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
