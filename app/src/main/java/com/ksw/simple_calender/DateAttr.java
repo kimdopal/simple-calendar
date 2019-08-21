@@ -1,16 +1,18 @@
 package com.ksw.simple_calender;
 
+import java.util.Date;
+
 public class DateAttr {
 
     int year;
-    int mouth;
+    int month;
     int day;
     int hour;
     int minute;
 
-    DateAttr(int year, int mouth, int day, int hour, int minute){
+    DateAttr(int year, int month, int day, int hour, int minute){
         this.year = year;
-        this.mouth = mouth;
+        this.month = month;
         this.day = day;
         this.hour = hour;
         this.minute = minute;
@@ -23,17 +25,17 @@ public class DateAttr {
         dateTime /= 100;
         this.day = (int)(dateTime % 100);
         dateTime /= 100;
-        this.mouth = (int)(dateTime % 100);
+        this.month = (int)(dateTime % 100);
         dateTime /= 100;
         this.year = (int)dateTime;
     }
 
-    public int getMouth() {
-        return mouth;
+    public int getMonth() {
+        return month;
     }
 
-    public void setMouth(int mouth) {
-        this.mouth = mouth;
+    public void setMonth(int month) {
+        this.month = month;
     }
 
     public int getYear() {
@@ -70,6 +72,42 @@ public class DateAttr {
 
     public long getDateTime()
     {
-        return (long)year * 100000000 + mouth * 1000000 + day * 10000 + hour * 100 + minute;
+        return (long)year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
+    }
+
+    public DateAttr getNextDay(){
+        Date myDate = new Date(year, month, 1);
+        myDate.setDate(32);
+        int last =  32- myDate.getDate();
+        if (day == last){
+            if (month == 12){
+                return new DateAttr( year + 1,1,1,hour,minute);
+            }
+
+            return new DateAttr( year,month + 1,1,hour,minute);
+        }
+        else {
+            return new DateAttr( year,month,day + 1,hour,minute);
+        }
+    }
+
+    public DateAttr getPrevDay() {
+        if (day == 1){
+            if (month == 1) {
+                Date myDate = new Date(year - 1, 12, 1);
+                myDate.setDate(32);
+                int last =  32- myDate.getDate();
+                return new DateAttr( year - 1,12, last, hour, minute);
+            }
+
+            Date myDate = new Date(year,  month - 1, 1);
+            myDate.setDate(32);
+            int last =  32- myDate.getDate();
+
+            return new DateAttr( year,month - 1,last, hour, minute);
+        }
+        else {
+            return new DateAttr( year,month,day + 1,hour,minute);
+        }
     }
 }
