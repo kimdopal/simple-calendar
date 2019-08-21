@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.OverScroller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,10 +17,19 @@ import java.util.Date;
 import static java.lang.Math.min;
 
 public class SimpleCalenderView extends View {
+    private OverScroller m_scroller;
     Paint m_paint;
     float m_width;
     float m_height;
     float m_weekHeight;
+
+    float m_widthRatio;
+    float m_heightRatio;
+
+    private float prevX;
+    private float prevY;
+
+    private boolean bmoved;
 
     static final int WEEK = 7;
     static final float EVENT_GAP = 30.0f;
@@ -28,14 +38,23 @@ public class SimpleCalenderView extends View {
 
     public SimpleCalenderView(Context context) {
         super(context);
+        init(context);
     }
 
     public SimpleCalenderView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init(context);
     }
 
     public SimpleCalenderView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        init(context);
+    }
+
+    private void init(Context context) {
+        m_scroller = new OverScroller(context);
+        m_widthRatio = 1.0f;
+        m_heightRatio = 1.0f;
     }
 
     @Override
@@ -59,8 +78,51 @@ public class SimpleCalenderView extends View {
     }
 
     @Override
+    public void computeScroll() {
+        if (m_scroller.computeScrollOffset()) {
+            setX(m_scroller.getCurrX());
+            setY(m_scroller.getCurrY());
+            invalidate();
+        }
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        return super.dispatchTouchEvent(event);
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return super.onTouchEvent(event);
+        float x = event.getRawX();
+        float y = event.getRawY();
+
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                prevX = x;
+                prevY = y;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                float disX = event.getRawX() - prevX;
+                float disY = event.getRawY() - prevY;
+
+                if (Math.abs(disX) > Math.abs(disY)){
+                    offsetLeftAndRight((int) disX);
+                }
+
+                prevX = event.getRawX();
+                prevY = event.getRawY();
+                break;
+            case MotionEvent.ACTION_UP:
+                if (bmoved){
+                }
+                bmoved = false;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+
+        return true;
     }
 
     private void drawWeekText(Canvas canvas) {
@@ -179,7 +241,6 @@ public class SimpleCalenderView extends View {
         return -1;
     }
 
-
     private void drawScheduleLine(Canvas canvas, int weekIndex, int pos, int startEventWeek, int endEventWeek, DateEvent e) {
         float dayWidth = m_width / 7;
         float dayHeight = (m_height - m_weekHeight) / 5;
@@ -246,5 +307,14 @@ public class SimpleCalenderView extends View {
             canvas.drawLine(0, tempY, m_width, tempY,  m_paint);
             tempY += dayHeight;
         }
+    }
+
+    /**
+     * 캘린더 크기 비율
+     * @param widthRatio
+     * @param heightRatio
+     */
+    public void setCalendarSize(float widthRatio, float heightRatio) {
+
     }
 }

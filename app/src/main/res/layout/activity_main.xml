@@ -13,21 +13,15 @@
         <com.ksw.simple_calender.SimpleCalenderView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
             >
         </com.ksw.simple_calender.SimpleCalenderView>
 
-        <FrameLayout
+        <com.ksw.simple_calender.SimpleDayView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="#ffffff"
             >
-
-            <TextView
-                android:id="@+id/textView2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="TextView" />
-        </FrameLayout>
+        </com.ksw.simple_calender.SimpleDayView>
 
     </com.ksw.simple_calender.SimpleCalenderLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

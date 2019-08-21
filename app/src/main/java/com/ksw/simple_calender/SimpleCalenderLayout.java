@@ -17,18 +17,17 @@ import android.view.animation.BounceInterpolator;
 import android.widget.OverScroller;
 
 public class SimpleCalenderLayout extends ViewGroup {
-    private OverScroller m_scroller;
-    private VelocityTracker m_velocityTracker;
-
-    private int m_scaledMinimumFlingVelocity;
-    private int m_scaledMaximumFlingVelocity;
 
     private float prevX;
     private float prevY;
 
     private float startX;
     private float startY;
+    private boolean bmoved;
+    private boolean bdrawed;
 
+    private SimpleCalenderView m_calendarView;
+    private SimpleDayView m_dayView;
 
     public SimpleCalenderLayout(Context context) {
         super(context);
@@ -46,12 +45,8 @@ public class SimpleCalenderLayout extends ViewGroup {
     }
 
     private void init(Context context) {
-        m_scroller = new OverScroller(context, new BounceInterpolator());
-
-        ViewConfiguration mViewConfig = ViewConfiguration.get(getContext());
-        m_scaledMinimumFlingVelocity = mViewConfig.getScaledMinimumFlingVelocity();
-        m_scaledMaximumFlingVelocity = mViewConfig.getScaledMaximumFlingVelocity();
-
+        bmoved = false;
+        bdrawed = false;
     }
 
     /**
@@ -61,6 +56,9 @@ public class SimpleCalenderLayout extends ViewGroup {
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        m_calendarView = (SimpleCalenderView) getChildAt(0);
+        m_dayView = (SimpleDayView)getChildAt(1);
+
         int count = getChildCount();
         int maxHeight = 0;
         int maxWidth = 0;
@@ -86,11 +84,16 @@ public class SimpleCalenderLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean bChanged, int l, int t, int r, int b) {
         int count = super.getChildCount();
+
         for (int i = 0; i < count; ++i) {
             View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
+                int offset = 0;
+                if (i == 1) {
+                    offset = getMeasuredHeight();
+                }
                 int left = getPaddingLeft();
-                int top = getPaddingTop();
+                int top = getPaddingTop() + offset;
                 child.layout(left, top,
                         left + child.getMeasuredWidth(),
                         top + child.getMeasuredHeight());
@@ -108,13 +111,14 @@ public class SimpleCalenderLayout extends ViewGroup {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (null == m_velocityTracker) {
-            m_velocityTracker = VelocityTracker.obtain();
-        }
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        startX = getX();
+        startY = getY();
+    }
 
-        m_velocityTracker.addMovement(event);
-
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
         float x = event.getRawX();
         float y = event.getRawY();
 
@@ -128,53 +132,40 @@ public class SimpleCalenderLayout extends ViewGroup {
                 float disX = event.getRawX() - prevX;
                 float disY = event.getRawY() - prevY;
 
-                offsetLeftAndRight((int) disX);
-                offsetTopAndBottom((int) disY);
+                if (! bmoved){
+                    bmoved = true;
+                    if (Math.abs(disX) < Math.abs(disY)){
+                        bdrawed = true;
+                    }
+                }
+
+                if (bdrawed){
+                    if (0 <= m_dayView.getY() + disY && m_dayView.getY() + disY < m_dayView.getHeight()) {
+                        m_dayView.offsetTopAndBottom((int) disY);
+                        float resize = getHeight() - (m_dayView.getY());
+                        m_calendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
+                    }
+                    m_dayView.accumulateY(disY);
+                }
+
                 prevX = event.getRawX();
                 prevY = event.getRawY();
                 break;
             case MotionEvent.ACTION_UP:
-                m_velocityTracker.computeCurrentVelocity(1000, m_scaledMaximumFlingVelocity);
-                int velocityX = (int)m_velocityTracker.getXVelocity();
-                int velocityY = (int)m_velocityTracker.getYVelocity();
-
-                int ex = (int) getX();
-                int ey = (int) getY();
-                int wx = (int) (ex - startX);
-                int wy = (int) (ey - startY);
-                m_scroller.startScroll(ex, ey, -wx, -wy);
-                invalidate();
+                if (bdrawed){
+                    m_dayView.startScroll();
+                }
+                bmoved = false;
+                bdrawed = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
-                if(null != m_velocityTracker) {
-                    m_velocityTracker.clear();
-                    m_velocityTracker.recycle();
-                    m_velocityTracker = null;
-                }
                 break;
         }
 
-        return true;
-    }
-
-    @Override
-    public void computeScroll() {
-        if (m_scroller.computeScrollOffset()) {
-            setX(m_scroller.getCurrX());
-            setY(m_scroller.getCurrY());
-            invalidate();
+        if (bdrawed) {
+            return true;
         }
-    }
 
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        startX = getX();
-        startY = getY();
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        return super.dispatchTouchEvent(ev);
+        return super.dispatchTouchEvent(event);
     }
 }
