@@ -145,6 +145,7 @@ public class SimpleCalenderLayout extends ViewGroup {
                         float resize = getHeight() - (m_dayView.getY());
                         m_calendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
                     }
+
                     m_dayView.accumulateY(disY);
                 }
 

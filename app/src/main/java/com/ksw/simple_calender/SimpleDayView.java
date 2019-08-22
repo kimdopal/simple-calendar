@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.BounceInterpolator;
@@ -140,8 +141,9 @@ public class SimpleDayView extends View {
     @Override
     public void computeScroll() {
         if (m_scroller.computeScrollOffset()) {
-            setX(m_scroller.getCurrX());
+            //setX(m_scroller.getCurrX());
             setY(m_scroller.getCurrY());
+            Log.d("좌표 : ", m_scroller.getCurrX() + " " + m_scroller.getCurrY());
             invalidate();
         }
     }
@@ -149,7 +151,7 @@ public class SimpleDayView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-         Paint  m_paint = new Paint();
+        Paint  m_paint = new Paint();
         canvas.drawRect(10, 10, 30, 30, m_paint);
     }
 }
