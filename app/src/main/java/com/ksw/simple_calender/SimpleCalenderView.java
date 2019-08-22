@@ -121,21 +121,24 @@ public class SimpleCalenderView extends View {
                 prevY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
+                // 이동량
                 float disX = event.getRawX() - prevX;
                 float disY = event.getRawY() - prevY;
 
                 if (Math.abs(disX) > Math.abs(disY)){
-                    //offsetLeftAndRight((int) disX);
                     m_scrolloffset.x += disX;
                     invalidate();
 
-                    if (Math.abs(m_scrolloffset.x) > getWidth() / 2) {
+                    if (Math.abs(m_scrolloffset.x) > getWidth() / 3) {
                         if (m_scrolloffset.x > 0){
                             startX = getWidth();
                         }
                         else{
                             startX = -getWidth();
                         }
+                    }
+                    else {
+                        startX = 0;
                     }
                     Log.d("좌표 : ", m_scrolloffset.x + "");
                 }
@@ -144,11 +147,33 @@ public class SimpleCalenderView extends View {
                 prevY = event.getRawY();
                 break;
             case MotionEvent.ACTION_UP:
-                int ex = (int) getX();
+                if (startX > 0){
+                    m_scrolloffset.x -= getWidth();
+                    DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
+                    DateAttr date2 = date.getPrevMonth();
+                    m_year = date2.getYear();
+                    m_month = date2.getMonth();
+                    m_date = date2.getDay();
+                }
+                else if (startX < 0) {
+                    m_scrolloffset.x += getWidth();
+                    DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
+                    DateAttr date2 = date.getNextMonth();
+                    m_year = date2.getYear();
+                    m_month = date2.getMonth();
+                    m_date = date2.getDay();
+                }
+
+                startX = 0;
+
+                int ex = (int) m_scrolloffset.x;
                 int ey = (int) getY();
                 int wx = (int) (ex - startX);
                 int wy = (int) (ey - startY);
                 m_scroller.startScroll(ex, ey, -wx, -wy);
+                Log.d("슬라이드 : ", ex+ " " + ey+ " " + wx+ " " + wy );
+
+
                 invalidate();
                 break;
             case MotionEvent.ACTION_CANCEL:
