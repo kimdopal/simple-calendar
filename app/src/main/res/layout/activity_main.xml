@@ -11,6 +11,7 @@
         android:layout_height="match_parent">
 
         <com.ksw.simple_calender.SimpleCalenderView
+            android:id="@+id/simpleCalenderView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >

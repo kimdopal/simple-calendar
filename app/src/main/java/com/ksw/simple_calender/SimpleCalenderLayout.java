@@ -103,11 +103,10 @@ public class SimpleCalenderLayout extends ViewGroup {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Paint p =  new Paint();
-        p.setColor(Color.GREEN);
-        p.setStyle(Paint.Style.STROKE);
-        p.setStrokeWidth(3);
-        canvas.drawRect(10, 10, 100, 100, p);
+        float resize = getHeight() - (m_dayView.getY());
+
+        m_calendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
+        m_calendarView.invalidate();
     }
 
     @Override
@@ -144,6 +143,7 @@ public class SimpleCalenderLayout extends ViewGroup {
                         m_dayView.offsetTopAndBottom((int) disY);
                         float resize = getHeight() - (m_dayView.getY());
                         m_calendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
+                        m_calendarView.invalidate();
                     }
 
                     m_dayView.accumulateY(disY);

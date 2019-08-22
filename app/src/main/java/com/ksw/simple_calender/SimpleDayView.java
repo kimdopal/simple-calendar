@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.BounceInterpolator;
 import android.view.animation.LinearInterpolator;
 import android.widget.OverScroller;
@@ -145,6 +146,15 @@ public class SimpleDayView extends View {
             setY(m_scroller.getCurrY());
             Log.d("좌표 : ", m_scroller.getCurrX() + " " + m_scroller.getCurrY());
             invalidate();
+            ViewGroup viewGroup = (ViewGroup)getParent();
+            if (viewGroup != null) {
+                float resize = getHeight() - (getY());
+                SimpleCalenderView view = (SimpleCalenderView)viewGroup.getChildAt(0);
+                if (view != null) {
+                    view.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
+                    view.invalidate();
+                }
+            }
         }
     }
 
