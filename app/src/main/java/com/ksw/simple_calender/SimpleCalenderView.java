@@ -35,8 +35,6 @@ public class SimpleCalenderView extends View {
     private float prevX;
     private float prevY;
 
-    private boolean bmoved;
-
     static final int WEEK = 7;
     static final float EVENT_GAP = 30.0f;
     static final int ITEM_SIZE = 7;
