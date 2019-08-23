@@ -35,7 +35,6 @@ public class SimpleCalenderView extends View {
     static final int ITEM_SIZE = 7;
     static final int WEEK = 7;
 
-
     boolean[][] weekList = null;
 
     // scroll val

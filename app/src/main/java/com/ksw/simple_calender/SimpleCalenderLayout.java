@@ -120,6 +120,7 @@ public class SimpleCalenderLayout extends ViewGroup {
     public boolean dispatchTouchEvent(MotionEvent event) {
         float x = event.getRawX();
         float y = event.getRawY();
+        boolean bup = false;
 
         switch (event.getAction())
         {
@@ -157,13 +158,16 @@ public class SimpleCalenderLayout extends ViewGroup {
                     m_dayView.startScroll();
                 }
                 bmoved = false;
-                bdrawed = false;
+                bup = true;
                 break;
             case MotionEvent.ACTION_CANCEL:
                 break;
         }
 
         if (bdrawed) {
+            if (bup){
+                bdrawed = false;
+            }
             return true;
         }
 

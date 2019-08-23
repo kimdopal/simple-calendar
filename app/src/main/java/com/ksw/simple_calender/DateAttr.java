@@ -9,7 +9,6 @@ public class DateAttr {
     int day;
     int hour;
     int minute;
-
     DateAttr(int year, int month, int day, int hour, int minute){
         this.year = year;
         this.month = month;
@@ -126,5 +125,23 @@ public class DateAttr {
         }
 
         return new DateAttr( year,month - 1, day, hour, minute);
+    }
+
+    public boolean isSameDay(DateAttr date){
+        if (year == date.year && month == date.month && day == date.day){
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isSameDate(DateAttr start) {
+        if (isSameDay(start)){
+            if (hour == start.hour && minute == start.minute){
+                return true;
+            }
+        }
+
+        return false;
     }
 }
