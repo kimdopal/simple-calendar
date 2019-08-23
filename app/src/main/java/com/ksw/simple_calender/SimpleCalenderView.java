@@ -58,6 +58,8 @@ public class SimpleCalenderView extends View {
     private float m_circleSize;
     private float m_testTextSize;
     private float m_weekTextSize;
+    private float m_dayWidth;
+    private float m_dayHeight;
 
     private ArrayList<String> weekStr;
 
@@ -248,13 +250,14 @@ public class SimpleCalenderView extends View {
         m_height = getHeight() * m_heightRatio;
         m_weekHeight = getHeight() / 20 * m_heightRatio;
 
-        m_weekTextSize = m_weekHeight / 2;
+        m_weekTextSize = m_weekHeight / 2 * (2 - m_heightRatio);
 
-        float dayHeight = (m_height - m_weekHeight) / 5; // 100
-        m_testTextSize = dayHeight / 10; // 12.5
-        m_circleSize = dayHeight / 8; //
-        m_eventGap = dayHeight / 40;
-        m_eventBoxSize = dayHeight / 8;
+        m_dayWidth = m_width / 7;
+        m_dayHeight = (m_height - m_weekHeight) / 5;
+        m_testTextSize = m_dayHeight / 10 * (2 - m_heightRatio); // 12.5
+        m_circleSize = m_dayHeight / 8; //
+        m_eventGap = m_dayHeight / 40;
+        m_eventBoxSize = m_dayHeight / 8;
 
         drawWeekText(canvas);
         drawCalenderAttr(canvas);
@@ -306,7 +309,6 @@ public class SimpleCalenderView extends View {
                 if (num == date) {
                     drawMarkNumber(canvas, i, j, Color.GRAY);
                 }
-
                 if (year == m_yearToday && month == m_monthToday && num == m_dateToday) {
                     drawMarkNumber(canvas, i, j, Color.GREEN);
                 }
@@ -382,12 +384,9 @@ public class SimpleCalenderView extends View {
     }
 
     private void drawScheduleLine(Canvas canvas, int weekIndex, int pos, int startEventWeek, int endEventWeek, DateEvent e) {
-        float dayWidth = m_width / 7;
-        float dayHeight = (m_height - m_weekHeight) / 5;
-
-        float tempStartX = dayWidth * startEventWeek + m_offsetX;
-        float tempEndX = dayWidth * (endEventWeek + 1) + m_offsetX;
-        float tempY = dayHeight * weekIndex + (m_eventGap + m_eventBoxSize) * (pos + 1);
+        float tempStartX = m_dayWidth * startEventWeek + m_offsetX;
+        float tempEndX = m_dayWidth * (endEventWeek + 1) + m_offsetX;
+        float tempY = m_dayHeight * weekIndex + (m_eventGap + m_eventBoxSize) * (pos + 1);
 
         m_paint.setColor(Color.BLUE);
         RectF rect = new RectF(tempStartX, tempY + m_weekHeight, tempEndX, tempY + m_weekHeight + m_eventBoxSize);
@@ -401,10 +400,8 @@ public class SimpleCalenderView extends View {
     private void drawMarkNumber(Canvas canvas, int y, int x, int c) {
         m_paint.setColor(c);
         m_paint.setAlpha(100);
-        float dayWidth = m_width / 7;
-        float dayHeight = (m_height - m_weekHeight) / 5;
-        float tempX = dayWidth / 2 + dayWidth * x;
-        float tempY = m_circleSize / 2 + m_weekHeight + dayHeight * y;
+        float tempX = m_dayWidth / 2 + m_dayWidth * x;
+        float tempY = m_circleSize / 2 + m_weekHeight + m_dayHeight * y;
 
         canvas.drawCircle( tempX + m_offsetX,  tempY, m_circleSize, m_paint);
     }
@@ -419,31 +416,26 @@ public class SimpleCalenderView extends View {
 
         m_paint.setTextAlign(Paint.Align.CENTER);
         m_paint.setTextSize(m_testTextSize);
-        float dayWidth = m_width / 7;
-        float dayHeight = (m_height - m_weekHeight) / 5;
-        float tempX = dayWidth * x;
-        float tempY = dayHeight * y;
+        float tempX = m_dayWidth * x;
+        float tempY = m_dayHeight * y;
 
-        canvas.drawText(num +"", tempX + dayWidth / 2 + m_offsetX,
+        canvas.drawText(num +"", tempX + m_dayWidth / 2 + m_offsetX,
                 tempY + m_weekHeight + m_testTextSize, m_paint);
     }
 
     private void drawCalenderBackLine(Canvas canvas) {
         m_paint.setColor(Color.GRAY);
-        float dayWidth = m_width / 7;
-        float dayHeight = (m_height - m_weekHeight) / 5;
-
-        float tempX = dayWidth;
+        float tempX = m_dayWidth;
         float tempY = m_weekHeight;
 
         for (int i = 0; i < 6; ++i) {
             canvas.drawLine(tempX + m_offsetX, 0, tempX + m_offsetX, m_height,  m_paint);
-            tempX += dayWidth;
+            tempX += m_dayWidth;
         }
 
         for (int i = 0; i < 5; ++i) {
             canvas.drawLine(m_offsetX, tempY, m_width, tempY,  m_paint);
-            tempY += dayHeight;
+            tempY += m_dayHeight;
         }
     }
 
