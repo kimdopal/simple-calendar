@@ -50,6 +50,18 @@ public class SimpleDayView extends View {
         accumulatedY = 0;
 
         m_state = HORIZONTAL_BOTTOM;
+        SimpleCalenderView.setListener(new SimpleCalenderView.CalendarTouchListener() {
+            @Override
+            public void onDayClick(DateAttr dateClicked) {
+                dateClicked.getYear();
+                dateClicked.getMonth();
+                dateClicked.getDay();
+
+                m_state = HORIZONTAL_CENTER;
+                startY = centerY;
+                startScroll();
+            }
+        });
     }
 
     @Override
@@ -84,7 +96,6 @@ public class SimpleDayView extends View {
             if (accumulatedX < 0){
             }
             else{
-
             }
         }
     }
@@ -163,5 +174,7 @@ public class SimpleDayView extends View {
         super.onDraw(canvas);
         Paint  m_paint = new Paint();
         canvas.drawRect(10, 10, 30, 30, m_paint);
+
+        
     }
 }

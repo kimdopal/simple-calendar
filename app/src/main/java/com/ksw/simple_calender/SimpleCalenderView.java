@@ -50,7 +50,26 @@ public class SimpleCalenderView extends View {
     int m_monthToday;
     int m_dateToday;
 
+    // draw Size Val
+    private float m_width;
+    private float m_height;
+    private float m_weekHeight;
+    private float m_eventGap;
+    private float m_eventBoxSize;
+    private float m_circleSize;
+    private float m_testTextSize;
+    private float m_weekTextSize;
+
     private ArrayList<String> weekStr;
+
+    private static CalendarTouchListener listener;
+    public interface CalendarTouchListener {
+        public void onDayClick(DateAttr dateClicked);
+    }
+
+    static void setListener(CalendarTouchListener l) {
+        listener = l;
+    }
 
     public SimpleCalenderView(Context context) {
         super(context);
@@ -81,6 +100,8 @@ public class SimpleCalenderView extends View {
         weekStr = new ArrayList<String> (Arrays.asList(
                 "일", "월", "화", "수", "목", "금", "토"
         ));
+
+
     }
 
     @Override
@@ -88,7 +109,6 @@ public class SimpleCalenderView extends View {
         if (m_scroller.computeScrollOffset()) {
             m_scrolloffset.x = m_scroller.getCurrX();
             Log.d("좌표 : ", m_scrolloffset.x + "");
-            // m_scroller.getCurrY());
             invalidate();
         }
     }
@@ -128,6 +148,7 @@ public class SimpleCalenderView extends View {
                     else {
                         startX = 0;
                     }
+
                     Log.d("좌표 : ", m_scrolloffset.x + "");
                 }
 
@@ -136,7 +157,7 @@ public class SimpleCalenderView extends View {
                 break;
             case MotionEvent.ACTION_UP:
                 if (m_scrolloffset.x == 0) {
-                    selectCalender(x, y);
+                    selectCalender(event.getX(), event.getY());
                 }
                 else {
                     if (startX > 0){
@@ -173,7 +194,37 @@ public class SimpleCalenderView extends View {
     }
 
     private void selectCalender(float x, float y) {
+        float dayWidth = m_width / 7;
+        float dayHeight = (m_height - m_weekHeight) / 5;
+        Date myDate = new Date(m_year, m_month, 1);
+        int day = myDate.getDay();
+        myDate.setDate(32);
+        int last =  32- myDate.getDate();
+        int num = 1;
+        for (int i = 0; i < 5 ; ++i) {
+            for (int j = 0; j < 7; ++j) {
+                if (i == 0 && j < day)continue;
+                float w = dayWidth * j;
+                float nw = dayWidth * (j + 1);
+                float h = dayHeight * i;
+                float nh = dayHeight * (i + 1);
 
+                if (w <= x && x <= nw && h + m_weekHeight <= y && y <= nh + m_weekHeight) {
+                    // num;
+                    listener.onDayClick(new DateAttr(m_year, m_month, num, 0, 0));
+                    m_date = num;
+                    invalidate();
+                    return;
+                }
+
+                if (num <= last) {
+                    num++;
+                }
+                else{
+                    return;
+                }
+            }
+        }
     }
 
     @Override
@@ -182,23 +233,6 @@ public class SimpleCalenderView extends View {
         startX = getX();
         startY = getY();
     }
-
-
-
-
-
-
-
-
-    // draw Size Val
-    private float m_width;
-    private float m_height;
-    private float m_weekHeight;
-    private float m_eventGap;
-    private float m_eventBoxSize;
-    private float m_circleSize;
-    private float m_testTextSize;
-    private float m_weekTextSize;
 
     @Override
     protected void onDraw(Canvas canvas) {
@@ -268,9 +302,7 @@ public class SimpleCalenderView extends View {
 
         for (int i = 0; i < 5 ; ++i) {
             for (int j = 0; j < 7; ++j) {
-                if (i == 0 && j < day) {
-                    continue;
-                }
+                if (i == 0 && j < day) continue;
 
                 if (num == date) {
                     drawMarkNumber(canvas, i, j, Color.GRAY);
