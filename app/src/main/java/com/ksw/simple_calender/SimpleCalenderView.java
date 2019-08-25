@@ -200,7 +200,7 @@ public class SimpleCalenderView extends View {
         Date myDate = new Date(m_year, m_month, 1);
         int day = myDate.getDay();
         myDate.setDate(32);
-        int last =  32- myDate.getDate();
+        int last =  32 - myDate.getDate();
         int num = 1;
         for (int i = 0; i < 5 ; ++i) {
             for (int j = 0; j < 7; ++j) {

@@ -41,6 +41,15 @@ public class SimpleDayView extends View {
     int m_date;
     ArrayList<String> weekStr;
 
+    private float m_BlockGap;
+    private float m_width;
+    private float m_height;
+    private float m_textSize;
+    private float m_listSize;
+    private float m_BlockSize;
+    private float m_TitleGap;
+    Paint  m_paint;
+
     public SimpleDayView(Context context) {
         super(context);
         init(context);
@@ -189,15 +198,6 @@ public class SimpleDayView extends View {
             }
         }
     }
-
-    private float m_BlockGap;
-    private float m_width;
-    private float m_height;
-    private float m_textSize;
-    private float m_listSize;
-    private float m_BlockSize;
-    private float m_TitleGap;
-    Paint  m_paint;
 
     @Override
     protected void onDraw(Canvas canvas) {

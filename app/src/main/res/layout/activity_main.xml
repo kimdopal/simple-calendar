@@ -1,28 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".MainActivity">
 
     <com.ksw.simple_calender.SimpleCalenderLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="180dp"
+        tools:layout_editor_absoluteY="315dp">
 
         <com.ksw.simple_calender.SimpleCalenderView
             android:id="@+id/simpleCalenderView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
+
         </com.ksw.simple_calender.SimpleCalenderView>
 
         <com.ksw.simple_calender.SimpleDayView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#ffffff"
-            >
-        </com.ksw.simple_calender.SimpleDayView>
+            android:background="#ffffff">
 
+        </com.ksw.simple_calender.SimpleDayView>
     </com.ksw.simple_calender.SimpleCalenderLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:backgroundTint="#009688"
+        app:srcCompat="@android:drawable/ic_input_add" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/contents"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
