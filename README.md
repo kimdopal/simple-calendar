@@ -2,6 +2,7 @@
 단순한 일정관리 앱 (개발 중)
 
 
+![test12341](https://github.com/rlatkddn212/simple-calendar/blob/master/test.gif)
 
 ## 할일
 
