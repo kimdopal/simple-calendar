@@ -13,9 +13,10 @@ import android.widget.OverScroller;
 import android.widget.Toast;
 
 public class SimpleScrollView extends View {
-    GestureDetector mGestureDetector;
-    OverScroller mOverScroller;
-    int mStartScroll;
+    private GestureDetector mGestureDetector;
+    private OverScroller mOverScroller;
+    private int mStartScroll;
+    private int mMoveScroll;
 
     public SimpleScrollView(Context context) {
         super(context);
@@ -33,12 +34,13 @@ public class SimpleScrollView extends View {
     }
 
     private void init(final Context context) {
+        mMoveScroll = 0;
         mOverScroller = new OverScroller(context, new LinearInterpolator());
         mGestureDetector = new GestureDetector(context, new GestureDetector.OnGestureListener() {
             @Override
             public boolean onDown(MotionEvent motionEvent) {
                 mOverScroller.forceFinished(true);
-                mStartScroll = (int)getScrollY();
+                mStartScroll = mMoveScroll;
                 return false;
             }
 
@@ -55,9 +57,11 @@ public class SimpleScrollView extends View {
 
             @Override
             public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                Log.d("onScroll","onScroll : " + motionEvent.getY() + "/" + motionEvent1.getY() + "/" + v +"/" + v1);
-               //scroll(motionEvent, motionEvent1);
-                setScrollY((int)-(motionEvent1.getY() - motionEvent.getY()) + mStartScroll);
+                mMoveScroll = (int)-(motionEvent1.getY() - motionEvent.getY()) + mStartScroll;
+
+                Log.d("onScroll","스크롤 위치 : " + mMoveScroll
+                        + "/ 손까락 위치 : "  + motionEvent.getY() + "/" + motionEvent1.getY() + "/속도 : " + v +"/" + v1);
+
                 invalidate();
                 return true;
             }
@@ -69,29 +73,17 @@ public class SimpleScrollView extends View {
             @Override
             public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
                 int currentY = getScrollY();
-                int targetY = 0;
-                if (v1 > 0) {
-                    if (currentY <= 0) {
-                        return false;
-                    }
+                int maxY = 10000;
+                if (v1 < 0){
 
-                    targetY = currentY / 1000 * 1000;
                 }
                 else {
-                    if (currentY >= 1000 * (3 - 1)) {
-                        return false;
-                    }
 
-                    targetY = 1000 * (currentY / 1000 + 1);
                 }
 
-                if (currentY == targetY) {
-                    targetY -= 1000;
-                }
-
-                Log.d("fling","fling : " + currentY + "/" + v1 + "/" + targetY );
-                mOverScroller.fling (0, currentY, 0, -(int) v1,
-                        0, 0, Math.min (currentY, targetY), Math.max (currentY, targetY));
+                Log.d("fling","fling : " + mMoveScroll + "/" + motionEvent1.getY() + "/" + v1);
+                mOverScroller.fling (0, mMoveScroll, 0, -(int) v1,
+                        0, 0, 0, 10000);
                 invalidate();
                 return true;
             }
@@ -102,8 +94,8 @@ public class SimpleScrollView extends View {
     public void computeScroll() {
         super.computeScroll();
         if (mOverScroller.computeScrollOffset ()) {
-            Log.d("computeScroll","computeScroll : " + mOverScroller.getCurrX() + "/" + mOverScroller.getCurrY());
-            scrollTo (0, mOverScroller.getCurrY());
+            //Log.d("computeScroll","computeScroll : " + mOverScroller.getCurrX() + "/" + mOverScroller.getCurrY());
+            mMoveScroll = mOverScroller.getCurrY();
             invalidate();
         }
     }
@@ -120,5 +112,12 @@ public class SimpleScrollView extends View {
 
         Paint p = new Paint();
         canvas.drawRect(10, 10 ,30 , 30, p);
+        p.setTextSize(40);
+        canvas.drawText(mMoveScroll+"", 10, 50, p);
+
+        int pos = mMoveScroll % 40;
+        for (int i = 0;i < 5; ++i) {
+            canvas.drawText((mMoveScroll / 40) + i +"", 10, 100 + 40 * i + pos, p);
+        }
     }
 }
