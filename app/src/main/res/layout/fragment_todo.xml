@@ -12,12 +12,56 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
-        android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="일정 내용"
+        android:inputType="textPersonName" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/startBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="일정 시작 시간" />
+
+        <Button
+            android:id="@+id/endBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="일정 종료 시간" />
+    </LinearLayout>
 
     <com.ksw.simple_calender.SimpleDatePicker
         android:id="@+id/datePicker"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></com.ksw.simple_calender.SimpleDatePicker>
+        android:layout_height="500px"
+        android:background="#eeeeee">
+
+    </com.ksw.simple_calender.SimpleDatePicker>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/allday"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="종일" />
+
+        <Button
+            android:id="@+id/today"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="오늘" />
+
+    </LinearLayout>
 
 </LinearLayout>

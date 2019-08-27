@@ -8,6 +8,7 @@ import static java.lang.Math.min;
 
 public class DateEventManager {
     ArrayList<DateEvent> eventList;
+    ArrayList<DateAttr> dateList;
     private static DateEventManager inst = null;
     CalenderDBHelper dbHelper;
 
@@ -22,6 +23,26 @@ public class DateEventManager {
     }
 
     void init(Context context){
+        dateList = new ArrayList<>();
+        Date myDate = new Date(0, 0, 1);
+        for (int i = 0; i <= 199; ++i) {
+            myDate.setYear(i);
+            for (int j = 0; j < 12 ; ++j){
+                myDate.setMonth(j);
+                myDate.setDate(1);
+                int day = myDate.getDay();
+                myDate.setDate(32);
+                int last =  32 - myDate.getDate();
+
+                for (int k = 1; k <= last; ++k){
+                    DateAttr newDate = new DateAttr(i + 1900, j + 1, k, day);
+
+                    day = (day + 1) % 7;
+                    dateList.add(newDate);
+                }
+            }
+        }
+
         eventList = new ArrayList<DateEvent>();
         dbHelper = new CalenderDBHelper(context, "calendar.db", null, 1);
     }
@@ -30,6 +51,23 @@ public class DateEventManager {
         // event list에 추가
         // DB에 추가
         eventList.add(event);
+    }
+
+    public ArrayList<DateAttr> getDateList() {
+        return dateList;
+    }
+
+    int getDateIndex(int year, int month, int date){
+        int ret = -1;
+        for (DateAttr it : dateList){
+            ret++;
+            if (it.getYear() != year) continue;
+            if (it.getMonth() != month) continue;
+            if (it.getDay() != date) continue;
+            break;
+        }
+
+        return ret;
     }
 
     ArrayList<DateEvent> rangeEvent(long sdate, long edate) {

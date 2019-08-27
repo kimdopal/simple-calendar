@@ -9,12 +9,21 @@ public class DateAttr {
     int day;
     int hour;
     int minute;
+    int week;
+
     DateAttr(int year, int month, int day, int hour, int minute){
         this.year = year;
         this.month = month;
         this.day = day;
         this.hour = hour;
         this.minute = minute;
+    }
+
+    DateAttr(int year, int month, int day, int week){
+        this.year = year;
+        this.month = month;
+        this.day = day;
+        this.week = week;
     }
 
     DateAttr(long dateTime) {
@@ -74,6 +83,14 @@ public class DateAttr {
         return (long)year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
     }
 
+    public int getWeek() {
+        return week;
+    }
+
+    public void setWeek(int week) {
+        this.week = week;
+    }
+
     public DateAttr getNextDay(){
         Date myDate = new Date(year, month, 1);
         myDate.setDate(32);
@@ -109,7 +126,6 @@ public class DateAttr {
             return new DateAttr( year,month,day + 1,hour,minute);
         }
     }
-
 
     public DateAttr getNextMonth(){
         if (month == 12){

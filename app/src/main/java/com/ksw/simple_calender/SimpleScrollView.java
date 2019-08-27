@@ -12,14 +12,34 @@ import android.view.animation.LinearInterpolator;
 import android.widget.OverScroller;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 public class SimpleScrollView extends View {
     private GestureDetector mGestureDetector;
     private OverScroller mOverScroller;
     private int mStartScroll;
     private int mMoveScroll;
+    private int mNumGap = 100;
+    private int mCenterLineStart = mNumGap * 2;
+    private int mCenterLineEnd = mNumGap * 3;
+
+    private boolean mIsDown;
+    private boolean mIsAdjust;
+    private boolean mIsFiling;
+
+    private int mMinScrollValue;
+    private int mMaxScrollValue;
+
+    ArrayList<String> mOutStrList;
 
     public SimpleScrollView(Context context) {
         super(context);
+        init(context);
+    }
+
+    public SimpleScrollView(Context context, ArrayList<String> arr) {
+        super(context);
+        mOutStrList = arr;
         init(context);
     }
 
@@ -33,7 +53,31 @@ public class SimpleScrollView extends View {
         init(context);
     }
 
+    public void setIndex(int idx){
+        mMoveScroll = mNumGap * idx;
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        mMaxScrollValue = mNumGap * (mOutStrList.size() - 1);
+
+    }
+
     private void init(final Context context) {
+        mMinScrollValue = 0;
+        mMaxScrollValue = 10000;
+
+        mIsDown = false;
+        mIsAdjust = false;
+        mIsFiling = false;
+
         mMoveScroll = 0;
         mOverScroller = new OverScroller(context, new LinearInterpolator());
         mGestureDetector = new GestureDetector(context, new GestureDetector.OnGestureListener() {
@@ -46,12 +90,10 @@ public class SimpleScrollView extends View {
 
             @Override
             public void onShowPress(MotionEvent motionEvent) {
-                Toast.makeText(context, "onShowPress", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public boolean onSingleTapUp(MotionEvent motionEvent) {
-                Toast.makeText(context, "onSingleTapUp", Toast.LENGTH_SHORT).show();
                 return false;
             }
 
@@ -72,18 +114,10 @@ public class SimpleScrollView extends View {
 
             @Override
             public boolean onFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
-                int currentY = getScrollY();
-                int maxY = 10000;
-                if (v1 < 0){
-
-                }
-                else {
-
-                }
-
                 Log.d("fling","fling : " + mMoveScroll + "/" + motionEvent1.getY() + "/" + v1);
                 mOverScroller.fling (0, mMoveScroll, 0, -(int) v1,
-                        0, 0, 0, 10000);
+                        0, 0, 0, mMaxScrollValue);
+                mIsFiling = true;
                 invalidate();
                 return true;
             }
@@ -94,15 +128,64 @@ public class SimpleScrollView extends View {
     public void computeScroll() {
         super.computeScroll();
         if (mOverScroller.computeScrollOffset ()) {
-            //Log.d("computeScroll","computeScroll : " + mOverScroller.getCurrX() + "/" + mOverScroller.getCurrY());
             mMoveScroll = mOverScroller.getCurrY();
+
+            Log.d("onScrollChanged","onScrollChanged : " + mMoveScroll);
+            changeIndex();
             invalidate();
+        }
+        else {
+            if (! mIsDown && !mIsAdjust){
+                mMoveScroll = Math.max(0, mMoveScroll);
+                mMoveScroll = Math.min(mMaxScrollValue, mMoveScroll);
+                mOverScroller.startScroll(0, mMoveScroll, 0,
+                        (mMoveScroll + mNumGap/2)/mNumGap * mNumGap - mMoveScroll);
+                mIsAdjust = true;
+                mIsFiling = false;
+                invalidate();
+            }
+        }
+    }
+
+    private void changeIndex() {
+
+        if (getParent() instanceof SimpleDatePicker){
+            SimpleDatePicker picker = (SimpleDatePicker)getParent();
+            picker.changeIndex(this, (int)mMoveScroll / mNumGap);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         mGestureDetector.onTouchEvent(event);
+
+        switch (event.getAction())
+        {
+            case MotionEvent.ACTION_DOWN:
+                mIsDown = true;
+                mIsAdjust = false;
+                mIsFiling = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                if (! mIsFiling) {
+                    mMoveScroll = Math.max(mMinScrollValue, mMoveScroll);
+                    mMoveScroll = Math.min(mMaxScrollValue, mMoveScroll);
+                    mOverScroller.startScroll(0, mMoveScroll, 0,
+                            (mMoveScroll + mNumGap/2) / mNumGap * mNumGap - mMoveScroll);
+                    changeIndex();
+                    invalidate();
+                    mIsAdjust = true;
+                }
+
+                mIsDown = false;
+                break;
+            case MotionEvent.ACTION_CANCEL:
+
+                break;
+        }
+
         return true;
     }
 
@@ -111,13 +194,17 @@ public class SimpleScrollView extends View {
         super.onDraw(canvas);
 
         Paint p = new Paint();
-        canvas.drawRect(10, 10 ,30 , 30, p);
-        p.setTextSize(40);
-        canvas.drawText(mMoveScroll+"", 10, 50, p);
+        p.setTextSize(mNumGap);
+        int pos = mMoveScroll % mNumGap;
+        int idx = (mMoveScroll / mNumGap);
 
-        int pos = mMoveScroll % 40;
-        for (int i = 0;i < 5; ++i) {
-            canvas.drawText((mMoveScroll / 40) + i +"", 10, 100 + 40 * i + pos, p);
+        for (int i = -2;i < 4; ++i) {
+            if (i + idx < 0)continue;
+            if (i + idx < mOutStrList.size())
+                canvas.drawText(mOutStrList.get(idx + i), 10, mCenterLineEnd + mNumGap * i - pos, p);
         }
+
+        canvas.drawLine(0, mCenterLineStart, getWidth(), mCenterLineStart, p);
+        canvas.drawLine(0, mCenterLineEnd, getWidth(), mCenterLineEnd, p);
     }
 }

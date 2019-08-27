@@ -101,8 +101,6 @@ public class SimpleCalenderView extends View {
         weekStr = new ArrayList<String> (Arrays.asList(
                 "일", "월", "화", "수", "목", "금", "토"
         ));
-
-
     }
 
     @Override
