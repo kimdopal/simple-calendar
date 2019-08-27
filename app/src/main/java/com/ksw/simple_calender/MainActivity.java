@@ -6,11 +6,12 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class MainActivity extends AppCompatActivity {
-
+    FloatingActionButton btn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,17 +30,23 @@ public class MainActivity extends AppCompatActivity {
         DateEvent e2 = new DateEvent("메롱", "ㅎㅎ", false, startAttr, endAttr);
         mngr.addEvent(e2);
 
-        final FloatingActionButton btn = (FloatingActionButton)findViewById(R.id.fab);
+        btn = (FloatingActionButton)findViewById(R.id.fab);
         btn.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
                 btn.setEnabled(false);
                 getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit)
+                        //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit)
                         .addToBackStack(null)
-                        .replace(R.id.contents, TodoFragment.newInstance("",""))
+                        .replace(R.id.contents, TodoFragment.newInstance())
                         .commit();
             }
         });
+    }
+
+    public void setEnableBtn(){
+        btn.setEnabled(true);
+        ViewGroup vg = findViewById(R.id.mainLayout);
+        vg.invalidate();
     }
 }

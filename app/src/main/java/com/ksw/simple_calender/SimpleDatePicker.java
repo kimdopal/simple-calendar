@@ -147,7 +147,7 @@ public class SimpleDatePicker extends LinearLayout {
     }
 
     public void setScrollIndex(DateAttr date){
-        mDate = date;
+        mDate.copyTo(date);
         view.setIndex(DateEventManager.getInstance().getDateIndex(mDate.getYear(), mDate.getMonth(), mDate.getDay()));
         hourView.setIndex(Math.min(mDate.getHour(), 23));
         minuteView.setIndex(Math.min(mDate.getMinute() / 5, 55));

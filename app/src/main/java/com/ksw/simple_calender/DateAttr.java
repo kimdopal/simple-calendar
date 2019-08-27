@@ -160,4 +160,13 @@ public class DateAttr {
 
         return false;
     }
+
+    public void copyTo(DateAttr date) {
+        this.year = date.year;
+        this.month = date.month;
+        this.day = date.day;
+        this.hour = date.hour;
+        this.minute = date.minute;
+        this.week = date.week;
+    }
 }

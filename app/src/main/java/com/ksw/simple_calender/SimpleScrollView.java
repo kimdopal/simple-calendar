@@ -55,6 +55,7 @@ public class SimpleScrollView extends View {
 
     public void setIndex(int idx){
         mMoveScroll = mNumGap * idx;
+        invalidate();
     }
 
     @Override

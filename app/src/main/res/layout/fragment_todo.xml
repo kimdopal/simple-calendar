@@ -8,7 +8,7 @@
     tools:context=".TodoFragment">
 
     <EditText
-        android:id="@+id/editText8"
+        android:id="@+id/editText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -38,7 +38,7 @@
     <com.ksw.simple_calender.SimpleDatePicker
         android:id="@+id/datePicker"
         android:layout_width="match_parent"
-        android:layout_height="500px"
+        android:layout_height="0px"
         android:background="#eeeeee">
 
     </com.ksw.simple_calender.SimpleDatePicker>

@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,16 +18,15 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
+import java.util.Date;
+
 public class TodoFragment extends Fragment {
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    private String mParam1;
-    private String mParam2;
-
-    private boolean mIsClicked;
+    private DateAttr startDate;
+    private DateAttr endDate;
 
     enum state{
         CLOSE,
@@ -38,12 +39,11 @@ public class TodoFragment extends Fragment {
     public TodoFragment() {
         // Required empty public constructor
     }
+    static TodoFragment fragment;
 
-    public static TodoFragment newInstance(String param1, String param2) {
-        TodoFragment fragment = new TodoFragment();
+    public static TodoFragment newInstance() {
+        fragment = new TodoFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,8 +52,6 @@ public class TodoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -65,25 +63,48 @@ public class TodoFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         mScollState = state.CLOSE;
+        Date today = new Date();
+        int y = today.getYear();
+        int m = today.getMonth();
+        int d = today.getDate();
+        int h = today.getHours();
+        int mn = today.getMinutes() % 5;
+
+        startDate = new DateAttr(y + 1900,m + 1,d,h,mn);
+        endDate = new DateAttr(y + 1900,m + 1,d,h,mn);
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_todo, container, false);
-        mIsClicked = false;
-
         final Button startBtn  = v.findViewById(R.id.startBtn);
         final Button endBtn  = v.findViewById(R.id.endBtn);
         final SimpleDatePicker datePicker = v.findViewById(R.id.datePicker);
+        final EditText edit = v.findViewById(R.id.editText);
+        final Button allDayBtn  = v.findViewById(R.id.allday);
+        allDayBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MainActivity act = (MainActivity)getActivity();
+                act.setEnableBtn();
+                DateEventManager mngr = DateEventManager.getInstance();
+                DateEvent e = new DateEvent(edit.getText().toString(), "ㅎㅎ", false, startDate, endDate);
+                mngr.addEvent(e);
+                getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            }
+        });
 
         datePicker.setListener(new SimpleDatePicker.ChangeDateListener() {
             @Override
             public void onChangeDate(DateAttr date) {
                 if (mScollState == state.OPEN_START){
+                    startDate.copyTo(date);
+                    endDate.copyTo(date);
                     startBtn.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일\n"
                             + date.getHour() + " : " + date.getMinute());
                     endBtn.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일\n"
                             + date.getHour() + " : " + date.getMinute());
                 }
                 else if (mScollState == state.OPEN_END){
+                    endDate.copyTo(date);
                     endBtn.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일\n"
                             + date.getHour() + " : " + date.getMinute());
                 }
@@ -119,23 +140,26 @@ public class TodoFragment extends Fragment {
         startBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (!mIsClicked){
+                // 열려 있음
+                if (mScollState == state.OPEN_START){
                     mScollState = state.CLOSE;
                     AnimatorSet set = new AnimatorSet();
                     set.play(slideAnimator);
                     set.setInterpolator(new AccelerateDecelerateInterpolator());
                     set.start();
-                    mIsClicked = true;
                 }
-                else
-                {
+                // 닫혀 있음
+                else if (mScollState == state.CLOSE){
                     mScollState = state.OPEN_START;
                     AnimatorSet set = new AnimatorSet();
                     set.play(slideAnimator2);
                     set.setInterpolator(new AccelerateDecelerateInterpolator());
                     set.start();
-                    mIsClicked = false;
+                    datePicker.setScrollIndex(startDate);
+                }
+                else{
+                    mScollState = state.OPEN_START;
+                    datePicker.setScrollIndex(startDate);
                 }
             }
         });
@@ -143,23 +167,24 @@ public class TodoFragment extends Fragment {
         endBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                if (!mIsClicked){
+                if (mScollState == state.OPEN_END){
                     mScollState = state.CLOSE;
                     AnimatorSet set = new AnimatorSet();
                     set.play(slideAnimator);
                     set.setInterpolator(new AccelerateDecelerateInterpolator());
                     set.start();
-                    mIsClicked = true;
                 }
-                else
-                {
+                else if (mScollState == state.CLOSE){
                     mScollState = state.OPEN_END;
                     AnimatorSet set = new AnimatorSet();
                     set.play(slideAnimator2);
                     set.setInterpolator(new AccelerateDecelerateInterpolator());
                     set.start();
-                    mIsClicked = false;
+                    datePicker.setScrollIndex(endDate);
+                }
+                else{
+                    mScollState = state.OPEN_END;
+                    datePicker.setScrollIndex(endDate);
                 }
             }
         });
