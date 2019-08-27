@@ -183,7 +183,6 @@ public class SimpleScrollView extends View {
                 mIsDown = false;
                 break;
             case MotionEvent.ACTION_CANCEL:
-
                 break;
         }
 

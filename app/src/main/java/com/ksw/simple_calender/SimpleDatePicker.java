@@ -3,6 +3,7 @@ package com.ksw.simple_calender;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -151,5 +152,10 @@ public class SimpleDatePicker extends LinearLayout {
         view.setIndex(DateEventManager.getInstance().getDateIndex(mDate.getYear(), mDate.getMonth(), mDate.getDay()));
         hourView.setIndex(Math.min(mDate.getHour(), 23));
         minuteView.setIndex(Math.min(mDate.getMinute() / 5, 55));
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return true;
     }
 }

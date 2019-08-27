@@ -340,8 +340,8 @@ public class SimpleCalenderView extends View {
                 int startEventWeek;
                 int endEventWeek;
                 if (i == 0) {
-                    startEventWeek = day + e.getStart().getDay();
-                    endEventWeek = day + e.getEnd().getDay();
+                    startEventWeek = day - 1 + e.getStart().getDay();
+                    endEventWeek = day - 1 + e.getEnd().getDay();
                 }
                 else{
                     startEventWeek = e.getStart().getDay() - startWeek;
@@ -362,7 +362,7 @@ public class SimpleCalenderView extends View {
     private int getWeekPos(int startEventWeek, int endEventWeek) {
         for (int i = 0; i < ITEM_SIZE; ++i) {
             boolean isPos = false;
-            for (int j = startEventWeek; j < endEventWeek; ++j) {
+            for (int j = startEventWeek; j <= endEventWeek; ++j) {
                 if (weekList[j][i]) {
                     isPos = true;
                     break;
@@ -370,7 +370,7 @@ public class SimpleCalenderView extends View {
             }
 
             if (! isPos) {
-                for (int j = startEventWeek; j < endEventWeek; ++j) {
+                for (int j = startEventWeek; j <= endEventWeek; ++j) {
                     weekList[j][i] = true;
                 }
 

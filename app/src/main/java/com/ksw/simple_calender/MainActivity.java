@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void setEnableBtn(){
         btn.setEnabled(true);
-        ViewGroup vg = findViewById(R.id.mainLayout);
+        View vg = findViewById(R.id.simpleCalenderView);
         vg.invalidate();
     }
 }
