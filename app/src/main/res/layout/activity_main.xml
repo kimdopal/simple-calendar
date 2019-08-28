@@ -9,15 +9,15 @@
     tools:context=".MainActivity">
 
     <com.ksw.simple_calender.SimpleCalenderLayout
+        android:id="@+id/simpleCalenderLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="180dp"
-        tools:layout_editor_absoluteY="315dp">
+        android:layout_height="match_parent">
 
         <com.ksw.simple_calender.SimpleCalenderView
             android:id="@+id/simpleCalenderView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:clickable="false">
 
         </com.ksw.simple_calender.SimpleCalenderView>
 

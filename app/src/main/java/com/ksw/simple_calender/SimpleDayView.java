@@ -15,7 +15,6 @@ import android.widget.OverScroller;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 
@@ -30,7 +29,7 @@ public class SimpleDayView extends View {
     final static int HORIZONTAL_CENTER = 1;
     final static int HORIZONTAL_TOP = 2;
 
-    int m_state;
+    private int mState;
 
     private float bottomY;
     private float centerY;
@@ -39,13 +38,13 @@ public class SimpleDayView extends View {
     int m_year;
     int m_month;
     int m_date;
+
     ArrayList<String> weekStr;
 
     private float m_BlockGap;
     private float m_width;
     private float m_height;
     private float m_textSize;
-    private float m_listSize;
     private float m_BlockSize;
     private float m_TitleGap;
     Paint  m_paint;
@@ -70,7 +69,7 @@ public class SimpleDayView extends View {
         accumulatedX = 0;
         accumulatedY = 0;
 
-        m_state = HORIZONTAL_BOTTOM;
+        mState = HORIZONTAL_BOTTOM;
         Date today = new Date();
         m_year = today.getYear();
         m_month = today.getMonth();
@@ -87,7 +86,7 @@ public class SimpleDayView extends View {
                 m_month = dateClicked.getMonth();
                 m_date = dateClicked.getDay();
 
-                m_state = HORIZONTAL_CENTER;
+                mState = HORIZONTAL_CENTER;
                 startY = centerY;
                 startScroll();
             }
@@ -135,29 +134,29 @@ public class SimpleDayView extends View {
         if (Math.abs(accumulatedY) > getHeight() / 5)
         {
             if (accumulatedY > 0) {
-                if (m_state == HORIZONTAL_BOTTOM) {
+                if (mState == HORIZONTAL_BOTTOM) {
                     startY = bottomY;
                 }
-                else if (m_state == HORIZONTAL_CENTER) {
-                    m_state = HORIZONTAL_BOTTOM;
+                else if (mState == HORIZONTAL_CENTER) {
+                    mState = HORIZONTAL_BOTTOM;
                     startY = bottomY;
                 }
-                else if (m_state == HORIZONTAL_TOP) {
-                    m_state = HORIZONTAL_CENTER;
+                else if (mState == HORIZONTAL_TOP) {
+                    mState = HORIZONTAL_CENTER;
                     startY = centerY;
                 }
             }
             else {
-                if (m_state == HORIZONTAL_BOTTOM) {
-                    m_state = HORIZONTAL_CENTER;
+                if (mState == HORIZONTAL_BOTTOM) {
+                    mState = HORIZONTAL_CENTER;
                     startY = centerY;
                 }
-                else if (m_state == HORIZONTAL_CENTER) {
-                    m_state = HORIZONTAL_TOP;
+                else if (mState == HORIZONTAL_CENTER) {
+                    mState = HORIZONTAL_TOP;
                     startY = topY;
                 }
-                else if (m_state == HORIZONTAL_TOP) {
-                    m_state = HORIZONTAL_TOP;
+                else if (mState == HORIZONTAL_TOP) {
+                    mState = HORIZONTAL_TOP;
                     startY = topY;
                 }
             }

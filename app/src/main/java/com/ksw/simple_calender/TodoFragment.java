@@ -3,23 +3,19 @@ package com.ksw.simple_calender;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.util.Date;
 
@@ -37,8 +33,8 @@ public class TodoFragment extends Fragment {
     state mScollState;
 
     public TodoFragment() {
-        // Required empty public constructor
     }
+
     static TodoFragment fragment;
 
     public static TodoFragment newInstance() {
@@ -57,10 +53,12 @@ public class TodoFragment extends Fragment {
 
     ValueAnimator slideAnimator;
     ValueAnimator slideAnimator2;
+    private EditText edit;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
 
         mScollState = state.CLOSE;
         Date today = new Date();
@@ -78,17 +76,12 @@ public class TodoFragment extends Fragment {
         final Button startBtn  = v.findViewById(R.id.startBtn);
         final Button endBtn  = v.findViewById(R.id.endBtn);
         final SimpleDatePicker datePicker = v.findViewById(R.id.datePicker);
-        final EditText edit = v.findViewById(R.id.editText);
+        edit = v.findViewById(R.id.editText);
         final Button allDayBtn  = v.findViewById(R.id.allday);
         allDayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                MainActivity act = (MainActivity)getActivity();
-                act.setEnableBtn();
-                DateEventManager mngr = DateEventManager.getInstance();
-                DateEvent e = new DateEvent(edit.getText().toString(), "ㅎㅎ", false, startDate, endDate);
-                mngr.addEvent(e);
-                getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
             }
         });
 
@@ -200,5 +193,27 @@ public class TodoFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        if (id == android.R.id.home){
+            MainActivity act = (MainActivity)getActivity();
+            act.disableFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+            return true;
+        }
+
+        if (id == R.id.action_btn01){
+            MainActivity act = (MainActivity)getActivity();
+            act.disableFragment();
+            DateEventManager mngr = DateEventManager.getInstance();
+            DateEvent e = new DateEvent(edit.getText().toString(), "ㅎㅎ", false, startDate, endDate);
+            mngr.addEvent(e);
+            getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

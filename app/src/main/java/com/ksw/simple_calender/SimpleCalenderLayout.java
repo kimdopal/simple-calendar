@@ -26,6 +26,8 @@ public class SimpleCalenderLayout extends ViewGroup {
     private boolean bmoved;
     private boolean bdrawed;
 
+    private boolean mIsEnable;
+
     private SimpleCalenderView m_calendarView;
     private SimpleDayView m_dayView;
 
@@ -47,6 +49,7 @@ public class SimpleCalenderLayout extends ViewGroup {
     private void init(Context context) {
         bmoved = false;
         bdrawed = false;
+        mIsEnable = true;
     }
 
     /**
@@ -84,7 +87,6 @@ public class SimpleCalenderLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean bChanged, int l, int t, int r, int b) {
         int count = super.getChildCount();
-
         for (int i = 0; i < count; ++i) {
             View child = getChildAt(i);
             if (child.getVisibility() != GONE) {
@@ -117,7 +119,13 @@ public class SimpleCalenderLayout extends ViewGroup {
     }
 
     @Override
+    public void setEnabled(boolean enabled) {
+        mIsEnable = enabled;
+    }
+
+    @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
+        if (! mIsEnable) return true;
         float x = event.getRawX();
         float y = event.getRawY();
         boolean bup = false;

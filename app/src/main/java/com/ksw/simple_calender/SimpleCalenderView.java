@@ -72,6 +72,16 @@ public class SimpleCalenderView extends View {
         listener = l;
     }
 
+    private static CalendarMonthListener monthListener;
+    public interface CalendarMonthListener {
+        public void changeMonth(DateAttr date);
+    }
+
+    static void setListener(CalendarMonthListener l) {
+        monthListener = l;
+    }
+
+
     public SimpleCalenderView(Context context) {
         super(context);
         init(context);
@@ -97,10 +107,19 @@ public class SimpleCalenderView extends View {
         m_yearToday = m_year = today.getYear();
         m_monthToday = m_month = today.getMonth();
         m_dateToday = m_date = today.getDate();
-
         weekStr = new ArrayList<String> (Arrays.asList(
                 "일", "월", "화", "수", "목", "금", "토"
         ));
+    }
+
+    public void setDate(DateAttr date){
+        m_year = date.getYear();
+        m_month = date.getMonth();
+        m_date = date.getDay();
+        if(monthListener != null){
+            monthListener.changeMonth(date);
+        }
+        invalidate();
     }
 
     @Override
@@ -162,18 +181,24 @@ public class SimpleCalenderView extends View {
                     if (startX > 0){
                         m_scrolloffset.x -= getWidth();
                         DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
-                        DateAttr date2 = date.getPrevMonth();
-                        m_year = date2.getYear();
-                        m_month = date2.getMonth();
+                        DateAttr prevMonth = date.getPrevMonth();
+                        m_year = prevMonth.getYear();
+                        m_month = prevMonth.getMonth();
                         m_date = 1;
+
+                        if(monthListener != null) monthListener.changeMonth(prevMonth);
                     }
                     else if (startX < 0) {
                         m_scrolloffset.x += getWidth();
                         DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
-                        DateAttr date2 = date.getNextMonth();
-                        m_year = date2.getYear();
-                        m_month = date2.getMonth();
+                        DateAttr nextMonth = date.getNextMonth();
+                        m_year = nextMonth.getYear();
+                        m_month = nextMonth.getMonth();
                         m_date = 1;
+
+                        if(monthListener != null){
+                            monthListener.changeMonth(nextMonth);
+                        }
                     }
 
                     int ex = (int)m_scrolloffset.x;
@@ -209,7 +234,6 @@ public class SimpleCalenderView extends View {
                 float nh = dayHeight * (i + 1);
 
                 if (w <= x && x <= nw && h + m_weekHeight <= y && y <= nh + m_weekHeight) {
-                    // num;
                     listener.onDayClick(new DateAttr(m_year, m_month, num, 0, 0));
                     m_date = num;
                     invalidate();
@@ -231,6 +255,11 @@ public class SimpleCalenderView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         startX = getX();
         startY = getY();
+
+        DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
+        if (monthListener != null){
+            monthListener.changeMonth(date);
+        }
     }
 
     @Override
