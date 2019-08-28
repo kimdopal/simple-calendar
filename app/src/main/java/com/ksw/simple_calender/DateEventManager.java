@@ -25,17 +25,17 @@ public class DateEventManager {
     void init(Context context){
         dateList = new ArrayList<>();
         Date myDate = new Date(0, 0, 1);
-        for (int i = 0; i <= 199; ++i) {
-            myDate.setYear(i);
-            for (int j = 0; j < 12 ; ++j){
-                myDate.setMonth(j);
+        for (int i = 1900; i < 2100; ++i) {
+            myDate.setYear(i - 1900);
+            for (int j = 1; j <= 12 ; ++j){
+                myDate.setMonth(j - 1);
                 myDate.setDate(1);
                 int day = myDate.getDay();
                 myDate.setDate(32);
                 int last =  32 - myDate.getDate();
 
                 for (int k = 1; k <= last; ++k){
-                    DateAttr newDate = new DateAttr(i + 1900, j + 1, k, day);
+                    DateAttr newDate = new DateAttr(i, j, k, day);
 
                     day = (day + 1) % 7;
                     dateList.add(newDate);

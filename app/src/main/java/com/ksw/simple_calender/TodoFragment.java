@@ -62,14 +62,14 @@ public class TodoFragment extends Fragment {
 
         mScollState = state.CLOSE;
         Date today = new Date();
-        int y = today.getYear();
-        int m = today.getMonth();
+        int y = today.getYear() + 1900;
+        int m = today.getMonth() + 1;
         int d = today.getDate();
         int h = today.getHours();
         int mn = today.getMinutes() % 5;
 
-        startDate = new DateAttr(y + 1900,m + 1,d,h,mn);
-        endDate = new DateAttr(y + 1900,m + 1,d,h,mn);
+        startDate = new DateAttr(y,m,d,h,mn);
+        endDate = new DateAttr(y,m,d,h,mn);
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_todo, container, false);

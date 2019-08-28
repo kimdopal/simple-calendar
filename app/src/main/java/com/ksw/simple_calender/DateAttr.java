@@ -92,7 +92,7 @@ public class DateAttr {
     }
 
     public DateAttr getNextDay(){
-        Date myDate = new Date(year, month, 1);
+        Date myDate = new Date(year - 1900, month - 1, 1);
         myDate.setDate(32);
         int last =  32- myDate.getDate();
         if (day == last){
@@ -110,13 +110,13 @@ public class DateAttr {
     public DateAttr getPrevDay() {
         if (day == 1){
             if (month == 1) {
-                Date myDate = new Date(year - 1, 12, 1);
+                Date myDate = new Date(year - 1900 - 1, 12 - 1, 1);
                 myDate.setDate(32);
                 int last =  32- myDate.getDate();
                 return new DateAttr( year - 1,12, last, hour, minute);
             }
 
-            Date myDate = new Date(year,  month - 1, 1);
+            Date myDate = new Date(year - 1900, month - 1 - 1, 1);
             myDate.setDate(32);
             int last =  32- myDate.getDate();
 
@@ -128,16 +128,16 @@ public class DateAttr {
     }
 
     public DateAttr getNextMonth(){
-        if (month == 11){
-            return new DateAttr( year + 1,0,day, hour, minute);
+        if (month == 12){
+            return new DateAttr( year + 1,1,day, hour, minute);
         }
 
         return new DateAttr( year,month + 1,day, hour, minute);
     }
 
     public DateAttr getPrevMonth() {
-        if (month == 0) {
-            return new DateAttr( year - 1,11, day, hour, minute);
+        if (month == 1) {
+            return new DateAttr( year - 1,12, day, hour, minute);
         }
 
         return new DateAttr( year,month - 1, day, hour, minute);

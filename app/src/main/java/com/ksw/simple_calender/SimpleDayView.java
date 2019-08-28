@@ -215,8 +215,8 @@ public class SimpleDayView extends View {
 
     private void drawTodoBlock(Canvas canvas) {
         DateEventManager mngr = DateEventManager.getInstance();
-        DateAttr dayStart = new DateAttr(m_year + 1900, m_month + 1, m_date, 0, 0);
-        DateAttr dayEnd = new DateAttr(m_year + 1900, m_month + 1, m_date, 23, 59);
+        DateAttr dayStart = new DateAttr(m_year, m_month, m_date, 0, 0);
+        DateAttr dayEnd = new DateAttr(m_year, m_month, m_date, 23, 59);
         ArrayList<DateEvent> events = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
 
         m_BlockSize = Math.min(m_width / 12, m_width / events.size());
@@ -242,11 +242,11 @@ public class SimpleDayView extends View {
     }
 
     private void drawDay(Canvas canvas) {
-        Date myDate = new Date(m_year, m_month, 1);
+        Date myDate = new Date(m_year - 1900, m_month - 1, 1);
         int day = myDate.getDay();
         int week = (day - 1 + m_date) % 7;
         m_paint.setTextSize(m_textSize);
-        canvas.drawText((m_year + 1900) + "-" + (m_month + 1) + "-" + m_date
+        canvas.drawText((m_year) + "-" + (m_month) + "-" + m_date
                 + "(" + weekStr.get(week) + ")", m_textSize, m_textSize, m_paint);
     }
 }

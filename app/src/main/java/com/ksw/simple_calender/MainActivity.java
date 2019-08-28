@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void changeMonth(DateAttr date) {
                 mDate.copyTo(date);
-                getSupportActionBar().setTitle(date.getYear() + 1900 + "-" + (date.getMonth() + 1));
+                getSupportActionBar().setTitle(date.getYear() + "-" + (date.getMonth()));
             }
         });
     }
@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn.setEnabled(true);
         mItem.setTitle("오늘");
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-        getSupportActionBar().setTitle(mDate.getYear() + 1900 + "-" + (mDate.getMonth() + 1));
+        getSupportActionBar().setTitle(mDate.getYear() + "-" + mDate.getMonth());
         mSimpleView.invalidate();
     }
 
@@ -108,8 +108,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (id == R.id.action_btn01){
                 Date today = new Date();
-                int year = today.getYear();
-                int month = today.getMonth();
+                int year = today.getYear() + 1900;
+                int month = today.getMonth() + 1;
                 int date = today.getDate();
                 mSimpleView.setDate(new DateAttr(year, month, date, 0 , 0));
                 return true;

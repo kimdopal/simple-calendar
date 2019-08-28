@@ -104,8 +104,8 @@ public class SimpleCalenderView extends View {
         m_heightRatio = 1.0f;
 
         Date today = new Date();
-        m_yearToday = m_year = today.getYear();
-        m_monthToday = m_month = today.getMonth();
+        m_yearToday = m_year = today.getYear() + 1900;
+        m_monthToday = m_month = today.getMonth() + 1;
         m_dateToday = m_date = today.getDate();
         weekStr = new ArrayList<String> (Arrays.asList(
                 "일", "월", "화", "수", "목", "금", "토"
@@ -220,7 +220,7 @@ public class SimpleCalenderView extends View {
     private void selectCalender(float x, float y) {
         float dayWidth = m_width / 7;
         float dayHeight = (m_height - m_weekHeight) / 5;
-        Date myDate = new Date(m_year, m_month, 1);
+        Date myDate = new Date(m_year - 1900, m_month - 1, 1);
         int day = myDate.getDay();
         myDate.setDate(32);
         int last =  32 - myDate.getDate();
@@ -321,7 +321,7 @@ public class SimpleCalenderView extends View {
     }
 
     private void drawMonth(Canvas canvas, int year, int month, int date) {
-        Date myDate = new Date(year, month, 1);
+        Date myDate = new Date(year - 1900, month - 1, 1);
         int day = myDate.getDay();
         myDate.setDate(32);
         int last =  32- myDate.getDate();
@@ -360,8 +360,8 @@ public class SimpleCalenderView extends View {
                 Arrays.fill(weekList[j], false);
             }
 
-            DateAttr sWeek = new DateAttr(year + 1900, month + 1, startWeek, 0, 0);
-            DateAttr eWeek = new DateAttr(year + 1900, month + 1, endWeek, 23, 59);
+            DateAttr sWeek = new DateAttr(year, month, startWeek, 0, 0);
+            DateAttr eWeek = new DateAttr(year, month, endWeek, 23, 59);
 
             ArrayList<DateEvent> ret = mngr.rangeCutEvent(sWeek.getDateTime(), eWeek.getDateTime());
 

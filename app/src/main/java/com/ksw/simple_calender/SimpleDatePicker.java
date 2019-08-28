@@ -73,13 +73,13 @@ public class SimpleDatePicker extends LinearLayout {
 
     private void init(Context context) {
         Date today = new Date();
-        int y = today.getYear();
-        int m = today.getMonth();
+        int y = today.getYear() + 1900;
+        int m = today.getMonth() + 1;
         int d = today.getDate();
         int h = today.getHours();
         int mn = today.getMinutes() % 5;
 
-        mDate = new DateAttr(y + 1900,m + 1,d,h,mn);
+        mDate = new DateAttr(y,m,d,h,mn);
         listener = null;
 
         ArrayList<String> minuteStr = new ArrayList<>();
