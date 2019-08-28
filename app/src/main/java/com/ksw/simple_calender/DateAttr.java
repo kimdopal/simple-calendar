@@ -128,16 +128,16 @@ public class DateAttr {
     }
 
     public DateAttr getNextMonth(){
-        if (month == 12){
-            return new DateAttr( year + 1,1,day, hour, minute);
+        if (month == 11){
+            return new DateAttr( year + 1,0,day, hour, minute);
         }
 
         return new DateAttr( year,month + 1,day, hour, minute);
     }
 
     public DateAttr getPrevMonth() {
-        if (month == 1) {
-            return new DateAttr( year - 1,12, day, hour, minute);
+        if (month == 0) {
+            return new DateAttr( year - 1,11, day, hour, minute);
         }
 
         return new DateAttr( year,month - 1, day, hour, minute);
