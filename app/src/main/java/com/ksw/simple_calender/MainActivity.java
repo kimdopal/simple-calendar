@@ -18,10 +18,12 @@ public class MainActivity extends AppCompatActivity {
     private MenuItem mItem;
     SimpleCalenderLayout mLayout;
     SimpleCalenderView mSimpleView;
+    SimpleDayView mSimpleDayView;
 
     enum state{
         CALENDAER,
-        ADDDATE
+        ADDDATE,
+        CHANGEDATE
     }
 
     state mState;
@@ -48,6 +50,23 @@ public class MainActivity extends AppCompatActivity {
 
         mLayout = findViewById(R.id.simpleCalenderLayout);
         mSimpleView = findViewById(R.id.simpleCalenderView);
+        mSimpleDayView = findViewById(R.id.simpleDayView);
+
+        mSimpleDayView.setListener(new SimpleDayView.OnItemClickListener() {
+            @Override
+            public void onClickedItem(DateEvent event) {
+                mLayout.setEnabled(false);
+                mState = state.CHANGEDATE;
+                mBtn.setEnabled(false);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setTitle("일정 수정");
+                getSupportFragmentManager().beginTransaction()
+                        //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit)
+                        .addToBackStack(null)
+                        .replace(R.id.contents, TodoFragment.newInstance(event))
+                        .commit();
+            }
+        });
 
         mBtn = (FloatingActionButton)findViewById(R.id.fab);
         mBtn.setOnClickListener(new View.OnClickListener(){
@@ -61,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
                 getSupportFragmentManager().beginTransaction()
                         //.setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.enter, R.anim.exit)
                         .addToBackStack(null)
-                        .replace(R.id.contents, TodoFragment.newInstance())
+                        .replace(R.id.contents, TodoFragment.newInstance(null))
                         .commit();
             }
         });
@@ -84,6 +103,7 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         getSupportActionBar().setTitle(mDate.getYear() + "-" + mDate.getMonth());
         mSimpleView.invalidate();
+        mSimpleDayView.invalidate();
     }
 
     @Override
@@ -94,8 +114,11 @@ public class MainActivity extends AppCompatActivity {
         if(mState == state.CALENDAER){
             mItem.setTitle("오늘");
         }
-        else{
+        else if (mState == state.ADDDATE){
             mItem.setTitle("추가");
+        }
+        else if (mState == state.CHANGEDATE){
+            mItem.setTitle("수정");
         }
 
         return true;

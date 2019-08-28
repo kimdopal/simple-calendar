@@ -20,27 +20,54 @@ import android.widget.EditText;
 import java.util.Date;
 
 public class TodoFragment extends Fragment {
-
-    private DateAttr startDate;
-    private DateAttr endDate;
+    private static DateEvent gEvent;
+    private static DateEvent gprevEvent;
 
     enum state{
         CLOSE,
         OPEN_START,
         OPEN_END
     }
-
     state mScollState;
+
+    private static boolean mIsAdd;
 
     public TodoFragment() {
     }
 
     static TodoFragment fragment;
 
-    public static TodoFragment newInstance() {
+    public static TodoFragment newInstance(DateEvent event) {
         fragment = new TodoFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
+
+        if (event == null){
+            // 새로운 이벤트 생성
+            Date today = new Date();
+            int y = today.getYear() + 1900;
+            int m = today.getMonth() + 1;
+            int d = today.getDate();
+            int h = today.getHours();
+            int mn = today.getMinutes() % 5;
+
+            DateAttr startDate = new DateAttr(y,m,d,h,mn);
+            DateAttr endDate = new DateAttr(y,m,d,h,mn);
+            gEvent = new DateEvent("", "", false, startDate, endDate);
+            mIsAdd = true;
+        }
+        else{
+            // 이벤트 변경
+            mIsAdd = false;
+            gprevEvent = event;
+
+            DateAttr startDate = new DateAttr(0);
+            DateAttr endDate = new DateAttr(0);
+            startDate.copyTo(gprevEvent.getStart());
+            endDate.copyTo(gprevEvent.getEnd());
+            gEvent = new DateEvent(gprevEvent.getTitle(), "", false, startDate, endDate);
+        }
+
         return fragment;
     }
 
@@ -61,15 +88,6 @@ public class TodoFragment extends Fragment {
         setHasOptionsMenu(true);
 
         mScollState = state.CLOSE;
-        Date today = new Date();
-        int y = today.getYear() + 1900;
-        int m = today.getMonth() + 1;
-        int d = today.getDate();
-        int h = today.getHours();
-        int mn = today.getMinutes() % 5;
-
-        startDate = new DateAttr(y,m,d,h,mn);
-        endDate = new DateAttr(y,m,d,h,mn);
 
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_todo, container, false);
@@ -77,6 +95,28 @@ public class TodoFragment extends Fragment {
         final Button endBtn  = v.findViewById(R.id.endBtn);
         final SimpleDatePicker datePicker = v.findViewById(R.id.datePicker);
         edit = v.findViewById(R.id.editText);
+        edit.setText(gEvent.getTitle());
+
+        Button removeBtn = v.findViewById(R.id.remove);
+        if (mIsAdd) {
+            removeBtn.setEnabled(false);
+        }
+        else{
+            removeBtn.setEnabled(true);
+        }
+
+        removeBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DateEventManager mngr = DateEventManager.getInstance();
+                mngr.removeEvent(gprevEvent);
+                MainActivity act = (MainActivity)getActivity();
+                act.disableFragment();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
+            }
+        });
+
         final Button allDayBtn  = v.findViewById(R.id.allday);
         allDayBtn.setOnClickListener(new OnClickListener() {
             @Override
@@ -88,18 +128,40 @@ public class TodoFragment extends Fragment {
         datePicker.setListener(new SimpleDatePicker.ChangeDateListener() {
             @Override
             public void onChangeDate(DateAttr date) {
+                String month = date.getMonth() + "";
+                if (month.length() == 1) {
+                    month = "0" + month;
+                }
+
+                String day = date.getDay() + "";
+                if (day.length() == 1){
+                    day = "0" + day;
+                }
+
+
+                String hour = date.getHour() + "";
+                if (hour.length() == 1){
+                    hour = "0" + hour;
+                }
+
+
+                String minute = date.getMinute() + "";
+                if (minute.length() == 1){
+                    minute = "0" + minute;
+                }
+
                 if (mScollState == state.OPEN_START){
-                    startDate.copyTo(date);
-                    endDate.copyTo(date);
-                    startBtn.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일\n"
-                            + date.getHour() + " : " + date.getMinute());
-                    endBtn.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일\n"
-                            + date.getHour() + " : " + date.getMinute());
+                    gEvent.getStart().copyTo(date);
+                    gEvent.getEnd().copyTo(date);
+                    startBtn.setText(date.getYear() + "년 " + month + "월 " + day + "일\n"
+                            + hour + " : " + minute);
+                    endBtn.setText(date.getYear() + "년 " + month + "월 " + day + "일\n"
+                            + hour + " : " + minute);
                 }
                 else if (mScollState == state.OPEN_END){
-                    endDate.copyTo(date);
-                    endBtn.setText(date.getYear() + "년 " + date.getMonth() + "월 " + date.getDay() + "일\n"
-                            + date.getHour() + " : " + date.getMinute());
+                    gEvent.getEnd().copyTo(date);
+                    endBtn.setText(date.getYear() + "년 " + month + "월 " + day + "일\n"
+                            + hour + " : " + minute);
                 }
             }
         });
@@ -148,11 +210,11 @@ public class TodoFragment extends Fragment {
                     set.play(slideAnimator2);
                     set.setInterpolator(new AccelerateDecelerateInterpolator());
                     set.start();
-                    datePicker.setScrollIndex(startDate);
+                    datePicker.setScrollIndex(gEvent.getStart());
                 }
                 else{
                     mScollState = state.OPEN_START;
-                    datePicker.setScrollIndex(startDate);
+                    datePicker.setScrollIndex(gEvent.getStart());
                 }
             }
         });
@@ -173,11 +235,11 @@ public class TodoFragment extends Fragment {
                     set.play(slideAnimator2);
                     set.setInterpolator(new AccelerateDecelerateInterpolator());
                     set.start();
-                    datePicker.setScrollIndex(endDate);
+                    datePicker.setScrollIndex(gEvent.getEnd());
                 }
                 else{
                     mScollState = state.OPEN_END;
-                    datePicker.setScrollIndex(endDate);
+                    datePicker.setScrollIndex(gEvent.getEnd());
                 }
             }
         });
@@ -209,8 +271,13 @@ public class TodoFragment extends Fragment {
             MainActivity act = (MainActivity)getActivity();
             act.disableFragment();
             DateEventManager mngr = DateEventManager.getInstance();
-            DateEvent e = new DateEvent(edit.getText().toString(), "ㅎㅎ", false, startDate, endDate);
-            mngr.addEvent(e);
+            if (mIsAdd){
+                gEvent.setTitle(edit.getText().toString());
+                mngr.addEvent(gEvent);
+            }else{
+                gEvent.setTitle(edit.getText().toString());
+                mngr.changeEvent(gprevEvent, gEvent);
+            }
             getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
 

@@ -92,7 +92,7 @@ public class SimpleDatePicker extends LinearLayout {
                 minuteStr.add(i+"");
             }
             if (mDate.getMinute() == i){
-                index = i /5;
+                index = i / 5;
             }
         }
 
@@ -107,7 +107,7 @@ public class SimpleDatePicker extends LinearLayout {
                 hourStr.add("0" + i);
             }else
             {
-                hourStr.add(i+"");
+                hourStr.add(i + "");
             }
 
             if (mDate.getHour() == i){

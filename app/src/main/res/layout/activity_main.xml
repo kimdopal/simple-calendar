@@ -22,6 +22,7 @@
         </com.ksw.simple_calender.SimpleCalenderView>
 
         <com.ksw.simple_calender.SimpleDayView
+            android:id="@+id/simpleDayView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#ffffff">

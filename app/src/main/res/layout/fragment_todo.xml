@@ -64,4 +64,11 @@
 
     </LinearLayout>
 
+    <Button
+        android:id="@+id/remove"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="일정 제거"
+        />
+
 </LinearLayout>

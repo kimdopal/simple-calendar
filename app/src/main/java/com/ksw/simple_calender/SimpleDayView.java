@@ -49,6 +49,17 @@ public class SimpleDayView extends View {
     private float m_TitleGap;
     Paint  m_paint;
 
+    ArrayList<DateEvent> events;
+
+    private OnItemClickListener listener;
+    public interface OnItemClickListener {
+        public void onClickedItem(DateEvent event);
+    }
+
+    public void setListener(OnItemClickListener l) {
+        listener = l;
+    }
+
     public SimpleDayView(Context context) {
         super(context);
         init(context);
@@ -71,8 +82,8 @@ public class SimpleDayView extends View {
 
         mState = HORIZONTAL_BOTTOM;
         Date today = new Date();
-        m_year = today.getYear();
-        m_month = today.getMonth();
+        m_year = today.getYear() + 1900;
+        m_month = today.getMonth() + 1;
         m_date = today.getDate();
 
         weekStr = new ArrayList<String>(Arrays.asList(
@@ -98,16 +109,12 @@ public class SimpleDayView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         startX = getX();
         startY = getY();
-    }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-            return true;
-    }
+        DateEventManager mngr = DateEventManager.getInstance();
+        DateAttr dayStart = new DateAttr(m_year, m_month, m_date, 0, 0);
+        DateAttr dayEnd = new DateAttr(m_year, m_month, m_date, 23, 59);
+        events = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent event) {
-        return super.dispatchTouchEvent(event);
     }
 
     @Override
@@ -209,16 +216,16 @@ public class SimpleDayView extends View {
         m_BlockGap = m_height / 50;
         m_BlockSize = m_height / 12;
 
+        DateEventManager mngr = DateEventManager.getInstance();
+        DateAttr dayStart = new DateAttr(m_year, m_month, m_date, 0, 0);
+        DateAttr dayEnd = new DateAttr(m_year, m_month, m_date, 23, 59);
+        events = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
+
         drawDay(canvas);
         drawTodoBlock(canvas);
     }
 
     private void drawTodoBlock(Canvas canvas) {
-        DateEventManager mngr = DateEventManager.getInstance();
-        DateAttr dayStart = new DateAttr(m_year, m_month, m_date, 0, 0);
-        DateAttr dayEnd = new DateAttr(m_year, m_month, m_date, 23, 59);
-        ArrayList<DateEvent> events = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
-
         m_BlockSize = Math.min(m_width / 12, m_width / events.size());
 
         Collections.sort(events);
@@ -246,7 +253,60 @@ public class SimpleDayView extends View {
         int day = myDate.getDay();
         int week = (day - 1 + m_date) % 7;
         m_paint.setTextSize(m_textSize);
-        canvas.drawText((m_year) + "-" + (m_month) + "-" + m_date
+
+        String month = m_month + "";
+        if (month.length() == 1) {
+            month = "0" + month;
+        }
+
+        String date = m_date + "";
+        if (date.length() == 1){
+            date = "0" + date;
+        }
+
+        canvas.drawText((m_year) + "-" + (month) + "-" + date
                 + "(" + weekStr.get(week) + ")", m_textSize, m_textSize, m_paint);
     }
+
+    DateEvent getPosItem(float x , float y){
+        m_BlockSize = Math.min(m_width / 12, m_width / events.size());
+
+        int idx = 0;
+        for (DateEvent e : events) {
+            float gap1 = m_TitleGap + idx * (m_BlockGap + m_BlockSize);
+            float gap2 = m_TitleGap + (idx * (m_BlockGap + m_BlockSize) + m_BlockSize);
+            if (gap1 < y && y < gap2){
+                return e;
+            }
+            idx++;
+        }
+
+        return null;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                break;
+            case MotionEvent.ACTION_MOVE:
+                break;
+            case MotionEvent.ACTION_UP:
+                DateEvent dateEvent = getPosItem(event.getX(), event.getY());
+                if (dateEvent != null){
+                    listener.onClickedItem(dateEvent.getParent());
+                }
+                break;
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent event) {
+        return super.dispatchTouchEvent(event);
+    }
+
 }

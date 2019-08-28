@@ -47,10 +47,24 @@ public class DateEventManager {
         dbHelper = new CalenderDBHelper(context, "calendar.db", null, 1);
     }
 
+    // event list에 추가
+    // TODO : DB에 추가
     void addEvent(DateEvent event){
-        // event list에 추가
-        // DB에 추가
         eventList.add(event);
+    }
+
+    void removeEvent(DateEvent event){
+        eventList.remove(event);
+    }
+
+    void removeEvent(int index){
+        eventList.remove(index);
+    }
+
+    void changeEvent(DateEvent fromEvent, DateEvent toEvent){
+        fromEvent.setTitle(toEvent.getTitle());
+        fromEvent.getStart().copyTo(toEvent.getStart());
+        fromEvent.getEnd().copyTo(toEvent.getEnd());
     }
 
     public ArrayList<DateAttr> getDateList() {
@@ -98,6 +112,7 @@ public class DateEventManager {
                     e.isbRepeat(),
                     new DateAttr(start),
                     new DateAttr(end));
+            newEvent.setParent(e);
 
             ret.add(newEvent);
         }

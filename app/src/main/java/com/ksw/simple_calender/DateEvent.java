@@ -3,7 +3,7 @@ package com.ksw.simple_calender;
 import android.graphics.Color;
 
 public class DateEvent implements Comparable<DateEvent>{
-
+    private DateEvent parent;
     private String title;
     private String content;
 
@@ -20,6 +20,14 @@ public class DateEvent implements Comparable<DateEvent>{
         this.bRepeat = bRepeat;
         this.start = s;
         this.end = e;
+    }
+
+    public void setParent(DateEvent parent) {
+        this.parent = parent;
+    }
+
+    public DateEvent getParent() {
+        return parent;
     }
 
     public String getTitle() {
@@ -71,7 +79,23 @@ public class DateEvent implements Comparable<DateEvent>{
     }
 
     public String getDateStr(){
-        return start.getHour() + ":" + start.getMinute() +"~" + end.getHour() + ":" + end.getMinute();
+        String startHour = start.getHour() + "";
+        if (startHour.length() == 1) {
+            startHour = "0" + startHour;
+        }
+        String startMinute = start.getMinute() + "";
+        if (startMinute.length() == 1) {
+            startMinute = "0" + startMinute;
+        }
+        String endHour = end.getHour() + "";
+        if (endHour.length() == 1) {
+            endHour = "0" + endHour;
+        }
+        String endMinute = end.getMinute() + "";
+        if (endMinute.length() == 1) {
+            endMinute = "0" + endMinute;
+        }
+        return  startHour + ":" + startMinute +"~" + endHour + ":" + endMinute;
     }
 
     @Override
