@@ -412,7 +412,6 @@ public class TodoFragment extends Fragment implements CompoundButton.OnCheckedCh
 
         if (id == R.id.action_btn01){
             MainActivity act = (MainActivity)getActivity();
-            act.disableFragment();
             DateEventManager mngr = DateEventManager.getInstance();
             if (mIsAdd){
                 gEvent.setTitle(edit.getText().toString());
@@ -421,6 +420,7 @@ public class TodoFragment extends Fragment implements CompoundButton.OnCheckedCh
                 gEvent.setTitle(edit.getText().toString());
                 mngr.changeEvent(gprevEvent, gEvent);
             }
+            act.disableFragment();
             getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
         }
 
