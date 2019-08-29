@@ -3,7 +3,12 @@
 
 커스텀 캘린더, 커스텀 DatePicker를 구현했습니다.
 
+캘린더 이동, 일정 확인
 ![test12341](https://github.com/rlatkddn212/simple-calendar/blob/master/test.gif)
+
+
+일정 추가, 삭제
+![test12341](https://github.com/rlatkddn212/simple-calendar/blob/master/test2.gif)
 
 ## 할일
 
