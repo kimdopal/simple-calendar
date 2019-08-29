@@ -7,10 +7,10 @@ import static java.lang.Math.max;
 import static java.lang.Math.min;
 
 public class DateEventManager {
-    ArrayList<DateEvent> eventList;
-    ArrayList<DateAttr> dateList;
+    ArrayList<DateEvent> mEventList;
+    ArrayList<DateAttr> mDateList;
     private static DateEventManager inst = null;
-    CalenderDBHelper dbHelper;
+    CalenderDBHelper mDbHelper;
 
     private DateEventManager(){}
 
@@ -23,7 +23,7 @@ public class DateEventManager {
     }
 
     void init(Context context){
-        dateList = new ArrayList<>();
+        mDateList = new ArrayList<>();
         Date myDate = new Date(0, 0, 1);
         for (int i = 1900; i < 2100; ++i) {
             myDate.setYear(i - 1900);
@@ -38,23 +38,23 @@ public class DateEventManager {
                     DateAttr newDate = new DateAttr(i, j, k, day);
 
                     day = (day + 1) % 7;
-                    dateList.add(newDate);
+                    mDateList.add(newDate);
                 }
             }
         }
 
-        eventList = new ArrayList<DateEvent>();
-        dbHelper = new CalenderDBHelper(context, "calendar.db", null, 1);
+        mEventList = new ArrayList<DateEvent>();
+        mDbHelper = new CalenderDBHelper(context, "calendar.db", null, 1);
     }
 
     // event list에 추가
     // TODO : DB에 추가
     void addEvent(DateEvent event){
-        eventList.add(event);
+        mEventList.add(event);
     }
 
     void removeEvent(DateEvent event){
-        eventList.remove(event);
+        mEventList.remove(event);
     }
 
     void changeEvent(DateEvent fromEvent, DateEvent toEvent){
@@ -64,13 +64,13 @@ public class DateEventManager {
         fromEvent.getEnd().copyTo(toEvent.getEnd());
     }
 
-    public ArrayList<DateAttr> getDateList() {
-        return dateList;
+    public ArrayList<DateAttr> getmDateList() {
+        return mDateList;
     }
 
     int getDateIndex(int year, int month, int date){
         int ret = -1;
-        for (DateAttr it : dateList){
+        for (DateAttr it : mDateList){
             ret++;
             if (it.getYear() != year) continue;
             if (it.getMonth() != month) continue;
@@ -84,7 +84,7 @@ public class DateEventManager {
     ArrayList<DateEvent> rangeEvent(long sdate, long edate) {
         ArrayList ret = new ArrayList<DateEvent>();
 
-        for (DateEvent e: eventList) {
+        for (DateEvent e: mEventList) {
             if (e.getEnd().getDateTime() < sdate)continue;
             if (e.getStart().getDateTime() > edate) continue;
 
@@ -97,8 +97,8 @@ public class DateEventManager {
     ArrayList<DateEvent> rangeCutEvent(long sdate, long edate) {
         ArrayList ret = new ArrayList<DateEvent>();
 
-        for (DateEvent e: eventList) {
-            if (e.getEnd().getDateTime() < sdate)continue;
+        for (DateEvent e: mEventList) {
+            if (e.getEnd().getDateTime() < sdate) continue;
             if (e.getStart().getDateTime() > edate) continue;
 
             long start = max(sdate, e.getStart().getDateTime());

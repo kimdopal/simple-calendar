@@ -2,34 +2,26 @@ package com.ksw.simple_calender;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.VelocityTracker;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.animation.BounceInterpolator;
-import android.widget.OverScroller;
 
 public class SimpleCalenderLayout extends ViewGroup {
 
-    private float prevX;
-    private float prevY;
+    private float mPrevX;
+    private float mPrevY;
 
     private float startX;
     private float startY;
-    private boolean bmoved;
-    private boolean bdrawed;
+    private boolean mIsMoved;
+    private boolean mIsDrawed;
 
     private boolean mIsEnable;
 
-    private SimpleCalenderView m_calendarView;
-    private SimpleDayView m_dayView;
+    private SimpleCalenderView mCalendarView;
+    private SimpleDayView mDayView;
 
     public SimpleCalenderLayout(Context context) {
         super(context);
@@ -47,8 +39,8 @@ public class SimpleCalenderLayout extends ViewGroup {
     }
 
     private void init(Context context) {
-        bmoved = false;
-        bdrawed = false;
+        mIsMoved = false;
+        mIsDrawed = false;
         mIsEnable = true;
     }
 
@@ -59,8 +51,8 @@ public class SimpleCalenderLayout extends ViewGroup {
      */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        m_calendarView = (SimpleCalenderView) getChildAt(0);
-        m_dayView = (SimpleDayView)getChildAt(1);
+        mCalendarView = (SimpleCalenderView) getChildAt(0);
+        mDayView = (SimpleDayView)getChildAt(1);
 
         int count = getChildCount();
         int maxHeight = 0;
@@ -105,10 +97,10 @@ public class SimpleCalenderLayout extends ViewGroup {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        float resize = getHeight() - (m_dayView.getY());
+        float resize = getHeight() - (mDayView.getY());
 
-        m_calendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
-        m_calendarView.invalidate();
+        mCalendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
+        mCalendarView.invalidate();
     }
 
     @Override
@@ -133,48 +125,48 @@ public class SimpleCalenderLayout extends ViewGroup {
         switch (event.getAction())
         {
             case MotionEvent.ACTION_DOWN:
-                prevX = x;
-                prevY = y;
+                mPrevX = x;
+                mPrevY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float disX = event.getRawX() - prevX;
-                float disY = event.getRawY() - prevY;
+                float disX = event.getRawX() - mPrevX;
+                float disY = event.getRawY() - mPrevY;
 
-                if (! bmoved){
-                    bmoved = true;
+                if (!mIsMoved){
+                    mIsMoved = true;
                     if (Math.abs(disX) < Math.abs(disY)){
-                        bdrawed = true;
+                        mIsDrawed = true;
                     }
                 }
 
-                if (bdrawed){
-                    if (0 <= m_dayView.getY() + disY && m_dayView.getY() + disY < m_dayView.getHeight()) {
-                        m_dayView.offsetTopAndBottom((int) disY);
-                        float resize = getHeight() - (m_dayView.getY());
-                        m_calendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
-                        m_calendarView.invalidate();
+                if (mIsDrawed){
+                    if (0 <= mDayView.getY() + disY && mDayView.getY() + disY < mDayView.getHeight()) {
+                        mDayView.offsetTopAndBottom((int) disY);
+                        float resize = getHeight() - (mDayView.getY());
+                        mCalendarView.setCalendarSize(1.0f, Math.max(0.5f, 1.0f - resize / getHeight()));
+                        mCalendarView.invalidate();
                     }
 
-                    m_dayView.accumulateY(disY);
+                    mDayView.accumulateY(disY);
                 }
 
-                prevX = event.getRawX();
-                prevY = event.getRawY();
+                mPrevX = event.getRawX();
+                mPrevY = event.getRawY();
                 break;
             case MotionEvent.ACTION_UP:
-                if (bdrawed){
-                    m_dayView.startScroll();
+                if (mIsDrawed){
+                    mDayView.startScroll();
                 }
-                bmoved = false;
+                mIsMoved = false;
                 bup = true;
                 break;
             case MotionEvent.ACTION_CANCEL:
                 break;
         }
 
-        if (bdrawed) {
+        if (mIsDrawed) {
             if (bup){
-                bdrawed = false;
+                mIsDrawed = false;
             }
             return true;
         }

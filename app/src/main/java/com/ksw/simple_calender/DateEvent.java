@@ -1,13 +1,11 @@
 package com.ksw.simple_calender;
 
-import android.graphics.Color;
-
 public class DateEvent implements Comparable<DateEvent>{
     private DateEvent parent;
     private String title;
     private String content;
 
-    private boolean bRepeat;
+    private boolean mIsRepeat;
 
     private DateAttr start;
     private DateAttr end;
@@ -38,8 +36,8 @@ public class DateEvent implements Comparable<DateEvent>{
         return content;
     }
 
-    public boolean isbRepeat() {
-        return bRepeat;
+    public boolean ismIsRepeat() {
+        return mIsRepeat;
     }
 
     public DateAttr getStart() {
@@ -62,8 +60,8 @@ public class DateEvent implements Comparable<DateEvent>{
         this.content = content;
     }
 
-    public void setbRepeat(boolean bRepeat) {
-        this.bRepeat = bRepeat;
+    public void setmIsRepeat(boolean mIsRepeat) {
+        this.mIsRepeat = mIsRepeat;
     }
 
     public void setStart(DateAttr start) {

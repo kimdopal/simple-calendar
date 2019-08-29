@@ -19,11 +19,11 @@ import java.util.Collections;
 import java.util.Date;
 
 public class SimpleDayView extends View {
-    private OverScroller m_scroller;
-    private float startX;
-    private float startY;
-    private float accumulatedX;
-    private float accumulatedY;
+    private OverScroller mScroller;
+    private float mStartX;
+    private float mStartY;
+    private float mAccumulatedX;
+    private float mAccumulatedY;
 
     final static int HORIZONTAL_BOTTOM = 0;
     final static int HORIZONTAL_CENTER = 1;
@@ -31,25 +31,25 @@ public class SimpleDayView extends View {
 
     private int mState;
 
-    private float bottomY;
-    private float centerY;
-    private float topY;
+    private float mBottomY;
+    private float mCenterY;
+    private float mTopY;
 
-    int m_year;
-    int m_month;
-    int m_date;
+    int mYear;
+    int mMonth;
+    int mDate;
 
-    ArrayList<String> weekStr;
+    ArrayList<String> mWeekStr;
 
-    private float m_BlockGap;
-    private float m_width;
-    private float m_height;
-    private float m_textSize;
-    private float m_BlockSize;
-    private float m_TitleGap;
-    Paint  m_paint;
+    private float mBlockGap;
+    private float mWidth;
+    private float mHeight;
+    private float mTextSize;
+    private float mBlockSize;
+    private float mTitleGap;
+    Paint mPaint;
 
-    ArrayList<DateEvent> events;
+    ArrayList<DateEvent> mEvents;
 
     private OnItemClickListener listener;
     public interface OnItemClickListener {
@@ -76,29 +76,29 @@ public class SimpleDayView extends View {
     }
 
     public void init(Context context) {
-        m_scroller = new OverScroller(context, new LinearInterpolator(), 0, 0);
-        accumulatedX = 0;
-        accumulatedY = 0;
+        mScroller = new OverScroller(context, new LinearInterpolator(), 0, 0);
+        mAccumulatedX = 0;
+        mAccumulatedY = 0;
 
         mState = HORIZONTAL_BOTTOM;
         Date today = new Date();
-        m_year = today.getYear() + 1900;
-        m_month = today.getMonth() + 1;
-        m_date = today.getDate();
+        mYear = today.getYear() + 1900;
+        mMonth = today.getMonth() + 1;
+        mDate = today.getDate();
 
-        weekStr = new ArrayList<String>(Arrays.asList(
+        mWeekStr = new ArrayList<String>(Arrays.asList(
                 "일", "월", "화", "수", "목", "금", "토"
         ));
 
         SimpleCalenderView.setListener(new SimpleCalenderView.CalendarTouchListener() {
             @Override
             public void onDayClick(DateAttr dateClicked) {
-                m_year = dateClicked.getYear();
-                m_month = dateClicked.getMonth();
-                m_date = dateClicked.getDay();
+                mYear = dateClicked.getYear();
+                mMonth = dateClicked.getMonth();
+                mDate = dateClicked.getDay();
 
                 mState = HORIZONTAL_CENTER;
-                startY = centerY;
+                mStartY = mCenterY;
                 startScroll();
             }
         });
@@ -107,13 +107,13 @@ public class SimpleDayView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        startX = getX();
-        startY = getY();
+        mStartX = getX();
+        mStartY = getY();
 
         DateEventManager mngr = DateEventManager.getInstance();
-        DateAttr dayStart = new DateAttr(m_year, m_month, m_date, 0, 0);
-        DateAttr dayEnd = new DateAttr(m_year, m_month, m_date, 23, 59);
-        events = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
+        DateAttr dayStart = new DateAttr(mYear, mMonth, mDate, 0, 0);
+        DateAttr dayEnd = new DateAttr(mYear, mMonth, mDate, 23, 59);
+        mEvents = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
 
     }
 
@@ -121,15 +121,15 @@ public class SimpleDayView extends View {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        bottomY = getMeasuredHeight();
-        centerY = getMeasuredHeight() / 2;
-        topY = 0;
+        mBottomY = getMeasuredHeight();
+        mCenterY = getMeasuredHeight() / 2;
+        mTopY = 0;
     }
 
     public void accumulateX(float x) {
-        accumulatedX += x;
-        if (Math.abs(accumulatedX) > getWidth() / 2){
-            if (accumulatedX < 0){
+        mAccumulatedX += x;
+        if (Math.abs(mAccumulatedX) > getWidth() / 2){
+            if (mAccumulatedX < 0){
             }
             else{
             }
@@ -137,61 +137,60 @@ public class SimpleDayView extends View {
     }
 
     public void accumulateY(float y) {
-        accumulatedY += y;
-        if (Math.abs(accumulatedY) > getHeight() / 5)
+        mAccumulatedY += y;
+        if (Math.abs(mAccumulatedY) > getHeight() / 5)
         {
-            if (accumulatedY > 0) {
+            if (mAccumulatedY > 0) {
                 if (mState == HORIZONTAL_BOTTOM) {
-                    startY = bottomY;
+                    mStartY = mBottomY;
                 }
                 else if (mState == HORIZONTAL_CENTER) {
                     mState = HORIZONTAL_BOTTOM;
-                    startY = bottomY;
+                    mStartY = mBottomY;
                 }
                 else if (mState == HORIZONTAL_TOP) {
                     mState = HORIZONTAL_CENTER;
-                    startY = centerY;
+                    mStartY = mCenterY;
                 }
             }
             else {
                 if (mState == HORIZONTAL_BOTTOM) {
                     mState = HORIZONTAL_CENTER;
-                    startY = centerY;
+                    mStartY = mCenterY;
                 }
                 else if (mState == HORIZONTAL_CENTER) {
                     mState = HORIZONTAL_TOP;
-                    startY = topY;
+                    mStartY = mTopY;
                 }
                 else if (mState == HORIZONTAL_TOP) {
                     mState = HORIZONTAL_TOP;
-                    startY = topY;
+                    mStartY = mTopY;
                 }
             }
 
-            accumulatedY = 0.0f;
+            mAccumulatedY = 0.0f;
         }
     }
 
     public void setStartPos(float x, float y) {
-        startX = x;
-        startY = y;
+        mStartX = x;
+        mStartY = y;
     }
 
     public void startScroll() {
         int x = (int) getX();
         int y = (int) getY();
-        int wx = (int) (x - startX);
-        int wy = (int) (y - startY);
-        m_scroller.startScroll(x, y, -wx, -wy);
+        int wx = (int) (x - mStartX);
+        int wy = (int) (y - mStartY);
+        mScroller.startScroll(x, y, -wx, -wy);
         invalidate();
     }
 
     @Override
     public void computeScroll() {
-        if (m_scroller.computeScrollOffset()) {
-            //setX(m_scroller.getCurrX());
-            setY(m_scroller.getCurrY());
-            Log.d("좌표 : ", m_scroller.getCurrX() + " " + m_scroller.getCurrY());
+        if (mScroller.computeScrollOffset()) {
+            setY(mScroller.getCurrY());
+            Log.d("좌표 : ", mScroller.getCurrX() + " " + mScroller.getCurrY());
             invalidate();
             ViewGroup viewGroup = (ViewGroup)getParent();
             if (viewGroup != null) {
@@ -208,30 +207,30 @@ public class SimpleDayView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        m_paint = new Paint();
-        m_width = getWidth();
-        m_height = getHeight();
-        m_textSize = m_height / 30;
-        m_TitleGap = m_textSize * 2;
-        m_BlockGap = m_height / 50;
-        m_BlockSize = m_height / 12;
+        mPaint = new Paint();
+        mWidth = getWidth();
+        mHeight = getHeight();
+        mTextSize = mHeight / 30;
+        mTitleGap = mTextSize * 2;
+        mBlockGap = mHeight / 50;
+        mBlockSize = mHeight / 12;
 
         DateEventManager mngr = DateEventManager.getInstance();
-        DateAttr dayStart = new DateAttr(m_year, m_month, m_date, 0, 0);
-        DateAttr dayEnd = new DateAttr(m_year, m_month, m_date, 23, 59);
-        events = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
+        DateAttr dayStart = new DateAttr(mYear, mMonth, mDate, 0, 0);
+        DateAttr dayEnd = new DateAttr(mYear, mMonth, mDate, 23, 59);
+        mEvents = mngr.rangeCutEvent(dayStart.getDateTime(), dayEnd.getDateTime());
 
         drawDay(canvas);
         drawTodoBlock(canvas);
     }
 
     private void drawTodoBlock(Canvas canvas) {
-        m_BlockSize = Math.min(m_width / 12, m_width / events.size());
+        mBlockSize = Math.min(mWidth / 12, mWidth / mEvents.size());
 
-        Collections.sort(events);
+        Collections.sort(mEvents);
 
         int idx = 0;
-        for (DateEvent e : events) {
+        for (DateEvent e : mEvents) {
             drawBlock(canvas, e, idx);
             idx++;
         }
@@ -239,42 +238,42 @@ public class SimpleDayView extends View {
 
     private void drawBlock(Canvas canvas, DateEvent e, int idx) {
 
-        m_paint.setColor(e.getColor());
-        RectF rect = new RectF(30,m_TitleGap + idx * (m_BlockGap + m_BlockSize), m_width - 30,
-                m_TitleGap + (idx * (m_BlockGap + m_BlockSize) + m_BlockSize));
-        canvas.drawRoundRect(rect, 10, 10, m_paint);
-        m_paint.setColor(Color.WHITE);
-        m_paint.setTextSize(m_textSize);
-        canvas.drawText(e.getDateStr() + "    " + e.getTitle() , 100 , m_TitleGap + idx * (m_BlockSize + m_BlockGap) + m_BlockSize * 2 / 3, m_paint);
+        mPaint.setColor(e.getColor());
+        RectF rect = new RectF(30, mTitleGap + idx * (mBlockGap + mBlockSize), mWidth - 30,
+                mTitleGap + (idx * (mBlockGap + mBlockSize) + mBlockSize));
+        canvas.drawRoundRect(rect, 10, 10, mPaint);
+        mPaint.setColor(Color.WHITE);
+        mPaint.setTextSize(mTextSize);
+        canvas.drawText(e.getDateStr() + "    " + e.getTitle() , 100 , mTitleGap + idx * (mBlockSize + mBlockGap) + mBlockSize * 2 / 3, mPaint);
     }
 
     private void drawDay(Canvas canvas) {
-        Date myDate = new Date(m_year - 1900, m_month - 1, 1);
+        Date myDate = new Date(mYear - 1900, mMonth - 1, 1);
         int day = myDate.getDay();
-        int week = (day - 1 + m_date) % 7;
-        m_paint.setTextSize(m_textSize);
+        int week = (day - 1 + mDate) % 7;
+        mPaint.setTextSize(mTextSize);
 
-        String month = m_month + "";
+        String month = mMonth + "";
         if (month.length() == 1) {
             month = "0" + month;
         }
 
-        String date = m_date + "";
+        String date = mDate + "";
         if (date.length() == 1){
             date = "0" + date;
         }
 
-        canvas.drawText((m_year) + "-" + (month) + "-" + date
-                + "(" + weekStr.get(week) + ")", m_textSize, m_textSize, m_paint);
+        canvas.drawText((mYear) + "-" + (month) + "-" + date
+                + "(" + mWeekStr.get(week) + ")", mTextSize, mTextSize, mPaint);
     }
 
     DateEvent getPosItem(float x , float y){
-        m_BlockSize = Math.min(m_width / 12, m_width / events.size());
+        mBlockSize = Math.min(mWidth / 12, mWidth / mEvents.size());
 
         int idx = 0;
-        for (DateEvent e : events) {
-            float gap1 = m_TitleGap + idx * (m_BlockGap + m_BlockSize);
-            float gap2 = m_TitleGap + (idx * (m_BlockGap + m_BlockSize) + m_BlockSize);
+        for (DateEvent e : mEvents) {
+            float gap1 = mTitleGap + idx * (mBlockGap + mBlockSize);
+            float gap2 = mTitleGap + (idx * (mBlockGap + mBlockSize) + mBlockSize);
             if (gap1 < y && y < gap2){
                 return e;
             }

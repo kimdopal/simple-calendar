@@ -41,12 +41,11 @@ public class TodoFragment extends Fragment implements CompoundButton.OnCheckedCh
 
     private static boolean mIsAdd;
 
-    CheckBox blueBtn;
-    CheckBox yellowBtn;
-    CheckBox redBtn;
-    CheckBox greenBtn;
-    CheckBox orangeBtn;
-
+    CheckBox mBlueBtn;
+    CheckBox mYellowBtn;
+    CheckBox mRedBtn;
+    CheckBox mGreenBtn;
+    CheckBox mOrangeBtn;
 
     public TodoFragment() {
     }
@@ -302,39 +301,39 @@ public class TodoFragment extends Fragment implements CompoundButton.OnCheckedCh
     }
 
     void setCallBackColorBtn(View v){
-        blueBtn = v.findViewById(R.id.blueColor);
-        yellowBtn = v.findViewById(R.id.yellowColor);
-        redBtn = v.findViewById(R.id.redColor);
-        greenBtn = v.findViewById(R.id.greenColor);
-        orangeBtn = v.findViewById(R.id.orangeColor);
+        mBlueBtn = v.findViewById(R.id.blueColor);
+        mYellowBtn = v.findViewById(R.id.yellowColor);
+        mRedBtn = v.findViewById(R.id.redColor);
+        mGreenBtn = v.findViewById(R.id.greenColor);
+        mOrangeBtn = v.findViewById(R.id.orangeColor);
 
-        blueBtn.setBackgroundColor(blueColor);
-        yellowBtn.setBackgroundColor(yellowColor);
-        redBtn.setBackgroundColor(redColor);
-        greenBtn.setBackgroundColor(greenColor);
-        orangeBtn.setBackgroundColor(orangeColor);
+        mBlueBtn.setBackgroundColor(blueColor);
+        mYellowBtn.setBackgroundColor(yellowColor);
+        mRedBtn.setBackgroundColor(redColor);
+        mGreenBtn.setBackgroundColor(greenColor);
+        mOrangeBtn.setBackgroundColor(orangeColor);
 
-        blueBtn.setOnCheckedChangeListener(this);
-        yellowBtn.setOnCheckedChangeListener(this);
-        redBtn.setOnCheckedChangeListener(this);
-        greenBtn.setOnCheckedChangeListener(this);
-        orangeBtn.setOnCheckedChangeListener(this);
+        mBlueBtn.setOnCheckedChangeListener(this);
+        mYellowBtn.setOnCheckedChangeListener(this);
+        mRedBtn.setOnCheckedChangeListener(this);
+        mGreenBtn.setOnCheckedChangeListener(this);
+        mOrangeBtn.setOnCheckedChangeListener(this);
 
         switch (gEvent.getColor()) {
             case blueColor:
-                blueBtn.setChecked(true);
+                mBlueBtn.setChecked(true);
                 break;
             case yellowColor:
-                yellowBtn.setChecked(true);
+                mYellowBtn.setChecked(true);
                 break;
             case greenColor:
-                greenBtn.setChecked(true);
+                mGreenBtn.setChecked(true);
                 break;
             case redColor:
-                redBtn.setChecked(true);
+                mRedBtn.setChecked(true);
                 break;
             case orangeColor:
-                orangeBtn.setChecked(true);
+                mOrangeBtn.setChecked(true);
                 break;
         }
     }
@@ -344,46 +343,46 @@ public class TodoFragment extends Fragment implements CompoundButton.OnCheckedCh
         switch (compoundButton.getId()){
             case R.id.blueColor:
                 if (b) {
-                    yellowBtn.setChecked(false);
-                    redBtn.setChecked(false);
-                    greenBtn.setChecked(false);
-                    orangeBtn.setChecked(false);
+                    mYellowBtn.setChecked(false);
+                    mRedBtn.setChecked(false);
+                    mGreenBtn.setChecked(false);
+                    mOrangeBtn.setChecked(false);
                     gEvent.setColor(blueColor);
                 }
                 break;
             case R.id.yellowColor:
                 if (b) {
-                    blueBtn.setChecked(false);
-                    redBtn.setChecked(false);
-                    greenBtn.setChecked(false);
-                    orangeBtn.setChecked(false);
+                    mBlueBtn.setChecked(false);
+                    mRedBtn.setChecked(false);
+                    mGreenBtn.setChecked(false);
+                    mOrangeBtn.setChecked(false);
                     gEvent.setColor(yellowColor);
                 }
                 break;
             case R.id.redColor:
                 if (b) {
-                    blueBtn.setChecked(false);
-                    yellowBtn.setChecked(false);
-                    greenBtn.setChecked(false);
-                    orangeBtn.setChecked(false);
+                    mBlueBtn.setChecked(false);
+                    mYellowBtn.setChecked(false);
+                    mGreenBtn.setChecked(false);
+                    mOrangeBtn.setChecked(false);
                     gEvent.setColor(redColor);
                 }
                 break;
             case R.id.greenColor:
                 if (b) {
-                    blueBtn.setChecked(false);
-                    yellowBtn.setChecked(false);
-                    redBtn.setChecked(false);
-                    orangeBtn.setChecked(false);
+                    mBlueBtn.setChecked(false);
+                    mYellowBtn.setChecked(false);
+                    mRedBtn.setChecked(false);
+                    mOrangeBtn.setChecked(false);
                     gEvent.setColor(greenColor);
                 }
                 break;
             case R.id.orangeColor:
                 if (b) {
-                    blueBtn.setChecked(false);
-                    yellowBtn.setChecked(false);
-                    redBtn.setChecked(false);
-                    greenBtn.setChecked(false);
+                    mBlueBtn.setChecked(false);
+                    mYellowBtn.setChecked(false);
+                    mRedBtn.setChecked(false);
+                    mGreenBtn.setChecked(false);
                     gEvent.setColor(orangeColor);
                 }
                 break;

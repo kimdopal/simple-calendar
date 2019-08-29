@@ -125,13 +125,13 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         if (mState == state.CALENDAER){
-
             if (id == R.id.action_btn01){
                 Date today = new Date();
                 int year = today.getYear() + 1900;
                 int month = today.getMonth() + 1;
                 int date = today.getDate();
                 mSimpleView.setDate(new DateAttr(year, month, date, 0 , 0));
+
                 return true;
             }
         }

@@ -20,48 +20,48 @@ import java.util.Date;
 import static java.lang.Math.min;
 
 public class SimpleCalenderView extends View {
-    private OverScroller m_scroller;
-    Paint m_paint;
+    private OverScroller mScroller;
+    Paint mPaint;
 
     private float startX;
     private float startY;
 
-    float m_widthRatio;
-    float m_heightRatio;
+    float mWidthRatio;
+    float mHeightRatio;
 
-    private float prevX;
-    private float prevY;
+    private float mPrevX;
+    private float mPrevY;
 
     static final int ITEM_SIZE = 7;
     static final int WEEK = 7;
 
-    boolean[][] weekList = null;
+    boolean[][] mWeekList = null;
 
     // scroll val
-    PointF m_scrolloffset;
-    float m_offsetX;
+    PointF mScrolloffset;
+    float mOffsetX;
 
-    int m_year;
-    int m_month;
-    int m_date;
+    int mYear;
+    int mMonth;
+    int mDate;
 
-    int m_yearToday;
-    int m_monthToday;
-    int m_dateToday;
+    int mYearToday;
+    int mMonthToday;
+    int mDateToday;
 
     // draw Size Val
-    private float m_width;
-    private float m_height;
-    private float m_weekHeight;
-    private float m_eventGap;
-    private float m_eventBoxSize;
-    private float m_circleSize;
-    private float m_testTextSize;
-    private float m_weekTextSize;
-    private float m_dayWidth;
-    private float m_dayHeight;
+    private float mWidth;
+    private float mHeight;
+    private float mWeekHeight;
+    private float mEventGap;
+    private float mEventBoxSize;
+    private float mCircleSize;
+    private float mTestTextSize;
+    private float mWeekTextSize;
+    private float mDayWidth;
+    private float mDayHeight;
 
-    private ArrayList<String> weekStr;
+    private ArrayList<String> mWeekStr;
 
     private static CalendarTouchListener listener;
     public interface CalendarTouchListener {
@@ -98,35 +98,36 @@ public class SimpleCalenderView extends View {
     }
 
     private void init(Context context) {
-        m_scroller = new OverScroller(context, new LinearInterpolator());
-        m_scrolloffset = new PointF();
-        m_widthRatio = 1.0f;
-        m_heightRatio = 1.0f;
+        mScroller = new OverScroller(context, new LinearInterpolator());
+        mScrolloffset = new PointF();
+        mWidthRatio = 1.0f;
+        mHeightRatio = 1.0f;
 
         Date today = new Date();
-        m_yearToday = m_year = today.getYear() + 1900;
-        m_monthToday = m_month = today.getMonth() + 1;
-        m_dateToday = m_date = today.getDate();
-        weekStr = new ArrayList<String> (Arrays.asList(
+        mYearToday = mYear = today.getYear() + 1900;
+        mMonthToday = mMonth = today.getMonth() + 1;
+        mDateToday = mDate = today.getDate();
+        mWeekStr = new ArrayList<String> (Arrays.asList(
                 "일", "월", "화", "수", "목", "금", "토"
         ));
     }
 
     public void setDate(DateAttr date){
-        m_year = date.getYear();
-        m_month = date.getMonth();
-        m_date = date.getDay();
+        mYear = date.getYear();
+        mMonth = date.getMonth();
+        mDate = date.getDay();
         if(monthListener != null){
             monthListener.changeMonth(date);
         }
+
         invalidate();
     }
 
     @Override
     public void computeScroll() {
-        if (m_scroller.computeScrollOffset()) {
-            m_scrolloffset.x = m_scroller.getCurrX();
-            Log.d("좌표 : ", m_scrolloffset.x + "");
+        if (mScroller.computeScrollOffset()) {
+            mScrolloffset.x = mScroller.getCurrX();
+            Log.d("좌표 : ", mScrolloffset.x + "");
             invalidate();
         }
     }
@@ -143,20 +144,20 @@ public class SimpleCalenderView extends View {
 
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                prevX = x;
-                prevY = y;
+                mPrevX = x;
+                mPrevY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
                 // 이동량
-                float disX = event.getRawX() - prevX;
-                float disY = event.getRawY() - prevY;
+                float disX = event.getRawX() - mPrevX;
+                float disY = event.getRawY() - mPrevY;
 
                 if (Math.abs(disX) > Math.abs(disY)){
-                    m_scrolloffset.x += disX;
+                    mScrolloffset.x += disX;
                     invalidate();
 
-                    if (Math.abs(m_scrolloffset.x) > getWidth() / 3) {
-                        if (m_scrolloffset.x > 0){
+                    if (Math.abs(mScrolloffset.x) > getWidth() / 3) {
+                        if (mScrolloffset.x > 0){
                             startX = getWidth();
                         }
                         else{
@@ -167,48 +168,50 @@ public class SimpleCalenderView extends View {
                         startX = 0;
                     }
 
-                    Log.d("좌표 : ", m_scrolloffset.x + "");
+                    Log.d("좌표 : ", mScrolloffset.x + "");
                 }
 
-                prevX = event.getRawX();
-                prevY = event.getRawY();
+                mPrevX = event.getRawX();
+                mPrevY = event.getRawY();
+
                 break;
             case MotionEvent.ACTION_UP:
-                if (m_scrolloffset.x == 0) {
+                if (mScrolloffset.x == 0) {
                     selectCalender(event.getX(), event.getY());
                 }
                 else {
                     if (startX > 0){
-                        m_scrolloffset.x -= getWidth();
-                        DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
+                        mScrolloffset.x -= getWidth();
+                        DateAttr date = new DateAttr(mYear, mMonth, mDate,0,0);
                         DateAttr prevMonth = date.getPrevMonth();
-                        m_year = prevMonth.getYear();
-                        m_month = prevMonth.getMonth();
-                        m_date = 1;
+                        mYear = prevMonth.getYear();
+                        mMonth = prevMonth.getMonth();
+                        mDate = 1;
 
                         if(monthListener != null) monthListener.changeMonth(prevMonth);
                     }
                     else if (startX < 0) {
-                        m_scrolloffset.x += getWidth();
-                        DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
+                        mScrolloffset.x += getWidth();
+                        DateAttr date = new DateAttr(mYear, mMonth, mDate,0,0);
                         DateAttr nextMonth = date.getNextMonth();
-                        m_year = nextMonth.getYear();
-                        m_month = nextMonth.getMonth();
-                        m_date = 1;
+                        mYear = nextMonth.getYear();
+                        mMonth = nextMonth.getMonth();
+                        mDate = 1;
 
                         if(monthListener != null){
                             monthListener.changeMonth(nextMonth);
                         }
                     }
 
-                    int ex = (int)m_scrolloffset.x;
+                    int ex = (int) mScrolloffset.x;
                     int ey = (int)getY();
                     int wx = (int)ex;
                     int wy = (int)ey;
-                    m_scroller.startScroll(ex, ey, -wx, -wy);
+                    mScroller.startScroll(ex, ey, -wx, -wy);
                     Log.d("슬라이드 : ", ex+ " " + ey+ " " + wx+ " " + wy );
                     invalidate();
                 }
+
                 break;
             case MotionEvent.ACTION_CANCEL:
                 break;
@@ -218,9 +221,9 @@ public class SimpleCalenderView extends View {
     }
 
     private void selectCalender(float x, float y) {
-        float dayWidth = m_width / 7;
-        float dayHeight = (m_height - m_weekHeight) / 5;
-        Date myDate = new Date(m_year - 1900, m_month - 1, 1);
+        float dayWidth = mWidth / 7;
+        float dayHeight = (mHeight - mWeekHeight) / 5;
+        Date myDate = new Date(mYear - 1900, mMonth - 1, 1);
         int day = myDate.getDay();
         myDate.setDate(32);
         int last =  32 - myDate.getDate();
@@ -233,10 +236,11 @@ public class SimpleCalenderView extends View {
                 float h = dayHeight * i;
                 float nh = dayHeight * (i + 1);
 
-                if (w <= x && x <= nw && h + m_weekHeight <= y && y <= nh + m_weekHeight) {
-                    listener.onDayClick(new DateAttr(m_year, m_month, num, 0, 0));
-                    m_date = num;
+                if (w <= x && x <= nw && h + mWeekHeight <= y && y <= nh + mWeekHeight) {
+                    listener.onDayClick(new DateAttr(mYear, mMonth, num, 0, 0));
+                    mDate = num;
                     invalidate();
+
                     return;
                 }
 
@@ -256,7 +260,7 @@ public class SimpleCalenderView extends View {
         startX = getX();
         startY = getY();
 
-        DateAttr date = new DateAttr(m_year, m_month,m_date,0,0);
+        DateAttr date = new DateAttr(mYear, mMonth, mDate,0,0);
         if (monthListener != null){
             monthListener.changeMonth(date);
         }
@@ -265,58 +269,58 @@ public class SimpleCalenderView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (m_paint == null) {
-            m_paint = new Paint();
+        if (mPaint == null) {
+            mPaint = new Paint();
         }
 
-        if (weekList == null) {
-            weekList = new boolean[WEEK][ITEM_SIZE];
+        if (mWeekList == null) {
+            mWeekList = new boolean[WEEK][ITEM_SIZE];
         }
 
-        m_width = getWidth();
-        m_height = getHeight() * m_heightRatio;
-        m_weekHeight = getHeight() / 20 * m_heightRatio;
+        mWidth = getWidth();
+        mHeight = getHeight() * mHeightRatio;
+        mWeekHeight = getHeight() / 20 * mHeightRatio;
 
-        m_weekTextSize = m_weekHeight / 2 * (2 - m_heightRatio);
+        mWeekTextSize = mWeekHeight / 2 * (2 - mHeightRatio);
 
-        m_dayWidth = m_width / 7;
-        m_dayHeight = (m_height - m_weekHeight) / 5;
-        m_testTextSize = m_dayHeight / 10 * (2 - m_heightRatio); // 12.5
-        m_circleSize = m_dayHeight / 8; //
-        m_eventGap = m_dayHeight / 40;
-        m_eventBoxSize = m_dayHeight / 8;
+        mDayWidth = mWidth / 7;
+        mDayHeight = (mHeight - mWeekHeight) / 5;
+        mTestTextSize = mDayHeight / 10 * (2 - mHeightRatio); // 12.5
+        mCircleSize = mDayHeight / 8; //
+        mEventGap = mDayHeight / 40;
+        mEventBoxSize = mDayHeight / 8;
 
         drawWeekText(canvas);
         drawCalenderAttr(canvas);
     }
 
     private void drawWeekText(Canvas canvas) {
-        m_paint.setTextAlign(Paint.Align.CENTER);
-        m_paint.setTextSize(m_weekTextSize);
-        float dayWidth = m_width / 7;
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTextSize(mWeekTextSize);
+        float dayWidth = mWidth / 7;
         float tempX = dayWidth / 2;
 
-        m_paint.setColor(Color.RED);
-        canvas.drawText(weekStr.get(0), tempX,  m_weekHeight * 9 / 10, m_paint);
+        mPaint.setColor(Color.RED);
+        canvas.drawText(mWeekStr.get(0), tempX,  mWeekHeight * 9 / 10, mPaint);
 
-        m_paint.setColor(Color.BLACK);
+        mPaint.setColor(Color.BLACK);
         for (int i = 1; i < 7; ++i)
         {
             tempX += dayWidth;
-            canvas.drawText(weekStr.get(i), tempX, m_weekHeight * 9 / 10, m_paint);
+            canvas.drawText(mWeekStr.get(i), tempX, mWeekHeight * 9 / 10, mPaint);
         }
     }
 
     private void drawCalenderAttr(Canvas canvas) {
-        DateAttr d = new DateAttr(m_year, m_month, m_date, 0,0);
+        DateAttr d = new DateAttr(mYear, mMonth, mDate, 0,0);
         DateAttr pd = d.getPrevMonth();
         DateAttr nd = d.getNextMonth();
 
-        m_offsetX = m_scrolloffset.x - getWidth();
+        mOffsetX = mScrolloffset.x - getWidth();
         drawMonth(canvas, pd.getYear(), pd.getMonth(), pd.getDay());
-        m_offsetX = m_scrolloffset.x;
-        drawMonth(canvas, m_year, m_month, m_date);
-        m_offsetX = m_scrolloffset.x + getWidth();
+        mOffsetX = mScrolloffset.x;
+        drawMonth(canvas, mYear, mMonth, mDate);
+        mOffsetX = mScrolloffset.x + getWidth();
         drawMonth(canvas, nd.getYear(), nd.getMonth(), nd.getDay());
     }
 
@@ -336,7 +340,7 @@ public class SimpleCalenderView extends View {
                 if (num == date) {
                     drawMarkNumber(canvas, i, j, Color.GRAY);
                 }
-                if (year == m_yearToday && month == m_monthToday && num == m_dateToday) {
+                if (year == mYearToday && month == mMonthToday && num == mDateToday) {
                     drawMarkNumber(canvas, i, j, Color.GREEN);
                 }
                 if (num <= last) {
@@ -357,7 +361,7 @@ public class SimpleCalenderView extends View {
         int endWeek = WEEK - day;
         for (int i= 0; i < 5; ++i) {
             for (int j = 0; j < 7; ++j) {
-                Arrays.fill(weekList[j], false);
+                Arrays.fill(mWeekList[j], false);
             }
 
             DateAttr sWeek = new DateAttr(year, month, startWeek, 0, 0);
@@ -392,7 +396,7 @@ public class SimpleCalenderView extends View {
         for (int i = 0; i < ITEM_SIZE; ++i) {
             boolean isPos = false;
             for (int j = startEventWeek; j <= endEventWeek; ++j) {
-                if (weekList[j][i]) {
+                if (mWeekList[j][i]) {
                     isPos = true;
                     break;
                 }
@@ -400,7 +404,7 @@ public class SimpleCalenderView extends View {
 
             if (! isPos) {
                 for (int j = startEventWeek; j <= endEventWeek; ++j) {
-                    weekList[j][i] = true;
+                    mWeekList[j][i] = true;
                 }
 
                 return i;
@@ -411,58 +415,58 @@ public class SimpleCalenderView extends View {
     }
 
     private void drawScheduleLine(Canvas canvas, int weekIndex, int pos, int startEventWeek, int endEventWeek, DateEvent e) {
-        float tempStartX = m_dayWidth * startEventWeek + m_offsetX;
-        float tempEndX = m_dayWidth * (endEventWeek + 1) + m_offsetX;
-        float tempY = m_dayHeight * weekIndex + (m_eventGap + m_eventBoxSize) * (pos + 1);
+        float tempStartX = mDayWidth * startEventWeek + mOffsetX;
+        float tempEndX = mDayWidth * (endEventWeek + 1) + mOffsetX;
+        float tempY = mDayHeight * weekIndex + (mEventGap + mEventBoxSize) * (pos + 1);
 
-        m_paint.setColor(e.getColor());
-        RectF rect = new RectF(tempStartX, tempY + m_weekHeight, tempEndX, tempY + m_weekHeight + m_eventBoxSize);
-        canvas.drawRoundRect(rect, 10, 10, m_paint);
-        m_paint.setTextAlign(Paint.Align.LEFT);
-        m_paint.setTextSize(m_testTextSize - m_eventGap);
-        m_paint.setColor(Color.WHITE);
-        canvas.drawText(e.getTitle(), tempStartX + 3, tempY + m_weekHeight + m_eventBoxSize - m_eventGap, m_paint);
+        mPaint.setColor(e.getColor());
+        RectF rect = new RectF(tempStartX, tempY + mWeekHeight, tempEndX, tempY + mWeekHeight + mEventBoxSize);
+        canvas.drawRoundRect(rect, 10, 10, mPaint);
+        mPaint.setTextAlign(Paint.Align.LEFT);
+        mPaint.setTextSize(mTestTextSize - mEventGap);
+        mPaint.setColor(Color.WHITE);
+        canvas.drawText(e.getTitle(), tempStartX + 3, tempY + mWeekHeight + mEventBoxSize - mEventGap, mPaint);
     }
 
     private void drawMarkNumber(Canvas canvas, int y, int x, int c) {
-        m_paint.setColor(c);
-        m_paint.setAlpha(100);
-        float tempX = m_dayWidth / 2 + m_dayWidth * x;
-        float tempY = m_circleSize / 2 + m_weekHeight + m_dayHeight * y;
+        mPaint.setColor(c);
+        mPaint.setAlpha(100);
+        float tempX = mDayWidth / 2 + mDayWidth * x;
+        float tempY = mCircleSize / 2 + mWeekHeight + mDayHeight * y;
 
-        canvas.drawCircle( tempX + m_offsetX,  tempY, m_circleSize, m_paint);
+        canvas.drawCircle( tempX + mOffsetX,  tempY, mCircleSize, mPaint);
     }
 
     private void drawDayNumber(Canvas canvas, int y, int x, int num) {
         if (x == 0) {
-            m_paint.setColor(Color.RED);
+            mPaint.setColor(Color.RED);
         }
         else {
-            m_paint.setColor(Color.BLACK);
+            mPaint.setColor(Color.BLACK);
         }
 
-        m_paint.setTextAlign(Paint.Align.CENTER);
-        m_paint.setTextSize(m_testTextSize);
-        float tempX = m_dayWidth * x;
-        float tempY = m_dayHeight * y;
+        mPaint.setTextAlign(Paint.Align.CENTER);
+        mPaint.setTextSize(mTestTextSize);
+        float tempX = mDayWidth * x;
+        float tempY = mDayHeight * y;
 
-        canvas.drawText(num +"", tempX + m_dayWidth / 2 + m_offsetX,
-                tempY + m_weekHeight + m_testTextSize, m_paint);
+        canvas.drawText(num +"", tempX + mDayWidth / 2 + mOffsetX,
+                tempY + mWeekHeight + mTestTextSize, mPaint);
     }
 
     private void drawCalenderBackLine(Canvas canvas) {
-        m_paint.setColor(Color.GRAY);
-        float tempX = m_dayWidth;
-        float tempY = m_weekHeight;
+        mPaint.setColor(Color.GRAY);
+        float tempX = mDayWidth;
+        float tempY = mWeekHeight;
 
         for (int i = 0; i < 6; ++i) {
-            canvas.drawLine(tempX + m_offsetX, 0, tempX + m_offsetX, m_height,  m_paint);
-            tempX += m_dayWidth;
+            canvas.drawLine(tempX + mOffsetX, 0, tempX + mOffsetX, mHeight, mPaint);
+            tempX += mDayWidth;
         }
 
         for (int i = 0; i < 5; ++i) {
-            canvas.drawLine(m_offsetX, tempY, m_width, tempY,  m_paint);
-            tempY += m_dayHeight;
+            canvas.drawLine(mOffsetX, tempY, mWidth, tempY, mPaint);
+            tempY += mDayHeight;
         }
     }
 
@@ -472,7 +476,7 @@ public class SimpleCalenderView extends View {
      * @param heightRatio
      */
     public void setCalendarSize(float widthRatio, float heightRatio) {
-        m_heightRatio = heightRatio;
-        m_widthRatio = widthRatio;
+        mHeightRatio = heightRatio;
+        mWidthRatio = widthRatio;
     }
 }
