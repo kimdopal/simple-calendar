@@ -16,11 +16,13 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 
 import java.util.Date;
 
-public class TodoFragment extends Fragment {
+public class TodoFragment extends Fragment implements CompoundButton.OnCheckedChangeListener{
     private static DateEvent gEvent;
     private static DateEvent gprevEvent;
 
@@ -31,7 +33,20 @@ public class TodoFragment extends Fragment {
     }
     state mScollState;
 
+    final static int blueColor = 0xFF1E90FF;
+    final static int yellowColor = 0xFFFFD700;
+    final static int redColor = 0xFFFF6347;
+    final static int greenColor = 0xFF32CD32;
+    final static int orangeColor = 0xFFFFA500;
+
     private static boolean mIsAdd;
+
+    CheckBox blueBtn;
+    CheckBox yellowBtn;
+    CheckBox redBtn;
+    CheckBox greenBtn;
+    CheckBox orangeBtn;
+
 
     public TodoFragment() {
     }
@@ -54,7 +69,7 @@ public class TodoFragment extends Fragment {
 
             DateAttr startDate = new DateAttr(y,m,d,h,mn);
             DateAttr endDate = new DateAttr(y,m,d,h,mn);
-            gEvent = new DateEvent("", "", false, startDate, endDate);
+            gEvent = new DateEvent("", "", blueColor, startDate, endDate);
             mIsAdd = true;
         }
         else{
@@ -66,7 +81,7 @@ public class TodoFragment extends Fragment {
             DateAttr endDate = new DateAttr(0);
             startDate.copyTo(gprevEvent.getStart());
             endDate.copyTo(gprevEvent.getEnd());
-            gEvent = new DateEvent(gprevEvent.getTitle(), "", false, startDate, endDate);
+            gEvent = new DateEvent(gprevEvent.getTitle(), "", gprevEvent.getColor(), startDate, endDate);
         }
 
         return fragment;
@@ -281,7 +296,98 @@ public class TodoFragment extends Fragment {
             }
         });
 
+        setCallBackColorBtn(v);
+
         return v;
+    }
+
+    void setCallBackColorBtn(View v){
+        blueBtn = v.findViewById(R.id.blueColor);
+        yellowBtn = v.findViewById(R.id.yellowColor);
+        redBtn = v.findViewById(R.id.redColor);
+        greenBtn = v.findViewById(R.id.greenColor);
+        orangeBtn = v.findViewById(R.id.orangeColor);
+
+        blueBtn.setBackgroundColor(blueColor);
+        yellowBtn.setBackgroundColor(yellowColor);
+        redBtn.setBackgroundColor(redColor);
+        greenBtn.setBackgroundColor(greenColor);
+        orangeBtn.setBackgroundColor(orangeColor);
+
+        blueBtn.setOnCheckedChangeListener(this);
+        yellowBtn.setOnCheckedChangeListener(this);
+        redBtn.setOnCheckedChangeListener(this);
+        greenBtn.setOnCheckedChangeListener(this);
+        orangeBtn.setOnCheckedChangeListener(this);
+
+        switch (gEvent.getColor()) {
+            case blueColor:
+                blueBtn.setChecked(true);
+                break;
+            case yellowColor:
+                yellowBtn.setChecked(true);
+                break;
+            case greenColor:
+                greenBtn.setChecked(true);
+                break;
+            case redColor:
+                redBtn.setChecked(true);
+                break;
+            case orangeColor:
+                orangeBtn.setChecked(true);
+                break;
+        }
+    }
+
+    @Override
+    public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+        switch (compoundButton.getId()){
+            case R.id.blueColor:
+                if (b) {
+                    yellowBtn.setChecked(false);
+                    redBtn.setChecked(false);
+                    greenBtn.setChecked(false);
+                    orangeBtn.setChecked(false);
+                    gEvent.setColor(blueColor);
+                }
+                break;
+            case R.id.yellowColor:
+                if (b) {
+                    blueBtn.setChecked(false);
+                    redBtn.setChecked(false);
+                    greenBtn.setChecked(false);
+                    orangeBtn.setChecked(false);
+                    gEvent.setColor(yellowColor);
+                }
+                break;
+            case R.id.redColor:
+                if (b) {
+                    blueBtn.setChecked(false);
+                    yellowBtn.setChecked(false);
+                    greenBtn.setChecked(false);
+                    orangeBtn.setChecked(false);
+                    gEvent.setColor(redColor);
+                }
+                break;
+            case R.id.greenColor:
+                if (b) {
+                    blueBtn.setChecked(false);
+                    yellowBtn.setChecked(false);
+                    redBtn.setChecked(false);
+                    orangeBtn.setChecked(false);
+                    gEvent.setColor(greenColor);
+                }
+                break;
+            case R.id.orangeColor:
+                if (b) {
+                    blueBtn.setChecked(false);
+                    yellowBtn.setChecked(false);
+                    redBtn.setChecked(false);
+                    greenBtn.setChecked(false);
+                    gEvent.setColor(orangeColor);
+                }
+                break;
+        }
     }
 
     @Override

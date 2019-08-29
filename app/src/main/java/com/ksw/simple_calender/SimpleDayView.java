@@ -239,7 +239,7 @@ public class SimpleDayView extends View {
 
     private void drawBlock(Canvas canvas, DateEvent e, int idx) {
 
-        m_paint.setColor(Color.BLUE);
+        m_paint.setColor(e.getColor());
         RectF rect = new RectF(30,m_TitleGap + idx * (m_BlockGap + m_BlockSize), m_width - 30,
                 m_TitleGap + (idx * (m_BlockGap + m_BlockSize) + m_BlockSize));
         canvas.drawRoundRect(rect, 10, 10, m_paint);

@@ -57,12 +57,9 @@ public class DateEventManager {
         eventList.remove(event);
     }
 
-    void removeEvent(int index){
-        eventList.remove(index);
-    }
-
     void changeEvent(DateEvent fromEvent, DateEvent toEvent){
         fromEvent.setTitle(toEvent.getTitle());
+        fromEvent.setColor(toEvent.getColor());
         fromEvent.getStart().copyTo(toEvent.getStart());
         fromEvent.getEnd().copyTo(toEvent.getEnd());
     }
@@ -109,7 +106,7 @@ public class DateEventManager {
 
             DateEvent newEvent = new DateEvent(e.getTitle(),
                     e.getContent(),
-                    e.isbRepeat(),
+                    e.getColor(),
                     new DateAttr(start),
                     new DateAttr(end));
             newEvent.setParent(e);

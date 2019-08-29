@@ -12,12 +12,12 @@ public class DateEvent implements Comparable<DateEvent>{
     private DateAttr start;
     private DateAttr end;
 
-    private Color color;
+    private int color;
 
-    DateEvent(String title, String content, boolean bRepeat, DateAttr s, DateAttr e) {
+    DateEvent(String title, String content, int color, DateAttr s, DateAttr e) {
         this.title = title;
         this.content = content;
-        this.bRepeat = bRepeat;
+        this.color = color;
         this.start = s;
         this.end = e;
     }
@@ -50,7 +50,7 @@ public class DateEvent implements Comparable<DateEvent>{
         return end;
     }
 
-    public Color getColor() {
+    public int getColor() {
         return color;
     }
 
@@ -74,7 +74,7 @@ public class DateEvent implements Comparable<DateEvent>{
         this.end = end;
     }
 
-    public void setColor(Color color) {
+    public void setColor(int color) {
         this.color = color;
     }
 

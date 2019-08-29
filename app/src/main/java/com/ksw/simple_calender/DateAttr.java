@@ -78,8 +78,7 @@ public class DateAttr {
         this.minute = minute;
     }
 
-    public long getDateTime()
-    {
+    public long getDateTime() {
         return (long)year * 100000000 + month * 1000000 + day * 10000 + hour * 100 + minute;
     }
 

@@ -64,6 +64,42 @@
 
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="197dp"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/blueColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <CheckBox
+            android:id="@+id/greenColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <CheckBox
+            android:id="@+id/yellowColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <CheckBox
+            android:id="@+id/orangeColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <CheckBox
+            android:id="@+id/redColor"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
     <Button
         android:id="@+id/remove"
         android:layout_width="match_parent"

@@ -3,6 +3,7 @@ package com.ksw.simple_calender;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -41,11 +42,11 @@ public class MainActivity extends AppCompatActivity {
         // test
         DateAttr startAttr = new DateAttr(201908201430L);
         DateAttr endAttr = new DateAttr(201908231430L);
-        DateEvent e = new DateEvent("dasd", "ㅎㅎ", false, startAttr, endAttr);
+        DateEvent e = new DateEvent("dasd", "ㅎㅎ", 0xFFFFD700, startAttr, endAttr);
         mngr.addEvent(e);
-        DateEvent e1 = new DateEvent("메롱", "ㅎㅎ", false, startAttr, endAttr);
+        DateEvent e1 = new DateEvent("메롱", "ㅎㅎ", 0xFFFFD700, startAttr, endAttr);
         mngr.addEvent(e1);
-        DateEvent e2 = new DateEvent("메롱", "ㅎㅎ", false, startAttr, endAttr);
+        DateEvent e2 = new DateEvent("메롱", "ㅎㅎ", 0xFFFFD700, startAttr, endAttr);
         mngr.addEvent(e2);
 
         mLayout = findViewById(R.id.simpleCalenderLayout);

@@ -415,7 +415,7 @@ public class SimpleCalenderView extends View {
         float tempEndX = m_dayWidth * (endEventWeek + 1) + m_offsetX;
         float tempY = m_dayHeight * weekIndex + (m_eventGap + m_eventBoxSize) * (pos + 1);
 
-        m_paint.setColor(Color.BLUE);
+        m_paint.setColor(e.getColor());
         RectF rect = new RectF(tempStartX, tempY + m_weekHeight, tempEndX, tempY + m_weekHeight + m_eventBoxSize);
         canvas.drawRoundRect(rect, 10, 10, m_paint);
         m_paint.setTextAlign(Paint.Align.LEFT);
