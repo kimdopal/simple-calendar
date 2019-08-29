@@ -3,6 +3,7 @@ package com.ksw.simple_calender;
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -49,7 +50,7 @@ public class TodoFragment extends Fragment {
             int m = today.getMonth() + 1;
             int d = today.getDate();
             int h = today.getHours();
-            int mn = today.getMinutes() % 5;
+            int mn = today.getMinutes() / 5 * 5;
 
             DateAttr startDate = new DateAttr(y,m,d,h,mn);
             DateAttr endDate = new DateAttr(y,m,d,h,mn);
@@ -81,6 +82,24 @@ public class TodoFragment extends Fragment {
     ValueAnimator slideAnimator;
     ValueAnimator slideAnimator2;
     private EditText edit;
+
+    public String getTimeStr(int time){
+        String timeStr = time + "";
+        if (timeStr.length() == 1) {
+            timeStr = "0" + timeStr;
+        }
+
+        return timeStr;
+    }
+
+    public String getDateAttrStr(DateAttr date){
+        String month = getTimeStr(date.getMonth());
+        String day = getTimeStr(date.getDay());
+        String hour = getTimeStr(date.getHour());
+        String minute = getTimeStr(date.getMinute());
+        return date.getYear() + "년 " + month + "월 " + day + "일\n"
+                    + hour + " : " + minute;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -117,51 +136,69 @@ public class TodoFragment extends Fragment {
             }
         });
 
-        final Button allDayBtn  = v.findViewById(R.id.allday);
+        Button allDayBtn  = v.findViewById(R.id.allday);
         allDayBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                DateAttr dateStart = gEvent.getStart();
+                DateAttr dateEnd = gEvent.getEnd();
 
+                dateStart.setHour(0);
+                dateStart.setMinute(0);
+                dateEnd.copyTo(dateStart);
+                dateEnd.setHour(23);
+                dateEnd.setMinute(59);
+                startBtn.setText(getDateAttrStr(gEvent.getStart()));
+                endBtn.setText(getDateAttrStr(gEvent.getEnd()));
             }
         });
+
+        Button todayBtn  = v.findViewById(R.id.today);
+        todayBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DateAttr dateStart = gEvent.getStart();
+                DateAttr dateEnd = gEvent.getEnd();
+
+                Date today = new Date();
+                int y = today.getYear() + 1900;
+                int m = today.getMonth() + 1;
+                int d = today.getDate();
+                dateStart.setYear(y);
+                dateStart.setMonth(m);
+                dateStart.setDay(d);
+                dateStart.setHour(0);
+                dateStart.setMinute(0);
+                dateEnd.copyTo(dateStart);
+                dateEnd.setHour(23);
+                dateEnd.setMinute(59);
+                startBtn.setText(getDateAttrStr(gEvent.getStart()));
+                endBtn.setText(getDateAttrStr(gEvent.getEnd()));
+            }
+        });
+        startBtn.setText(getDateAttrStr(gEvent.getStart()));
+        endBtn.setText(getDateAttrStr(gEvent.getEnd()));
 
         datePicker.setListener(new SimpleDatePicker.ChangeDateListener() {
             @Override
             public void onChangeDate(DateAttr date) {
-                String month = date.getMonth() + "";
-                if (month.length() == 1) {
-                    month = "0" + month;
-                }
-
-                String day = date.getDay() + "";
-                if (day.length() == 1){
-                    day = "0" + day;
-                }
-
-
-                String hour = date.getHour() + "";
-                if (hour.length() == 1){
-                    hour = "0" + hour;
-                }
-
-
-                String minute = date.getMinute() + "";
-                if (minute.length() == 1){
-                    minute = "0" + minute;
-                }
-
                 if (mScollState == state.OPEN_START){
                     gEvent.getStart().copyTo(date);
                     gEvent.getEnd().copyTo(date);
-                    startBtn.setText(date.getYear() + "년 " + month + "월 " + day + "일\n"
-                            + hour + " : " + minute);
-                    endBtn.setText(date.getYear() + "년 " + month + "월 " + day + "일\n"
-                            + hour + " : " + minute);
+                    startBtn.setText(getDateAttrStr(date));
+                    endBtn.setText(getDateAttrStr(date));
                 }
                 else if (mScollState == state.OPEN_END){
-                    gEvent.getEnd().copyTo(date);
-                    endBtn.setText(date.getYear() + "년 " + month + "월 " + day + "일\n"
-                            + hour + " : " + minute);
+                    if (date.getDateTime() < gEvent.getStart().getDateTime()){
+                        endBtn.setTextColor(Color.RED);
+                        gEvent.getEnd().copyTo(gEvent.getStart());
+                        endBtn.setText(getDateAttrStr(gEvent.getEnd()));
+                    }
+                    else{
+                        endBtn.setTextColor(Color.BLACK);
+                        gEvent.getEnd().copyTo(date);
+                        endBtn.setText(getDateAttrStr(date));
+                    }
                 }
             }
         });
@@ -264,6 +301,7 @@ public class TodoFragment extends Fragment {
             MainActivity act = (MainActivity)getActivity();
             act.disableFragment();
             getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+
             return true;
         }
 
