@@ -5,13 +5,11 @@
 
 ![test12341](https://github.com/rlatkddn212/simple-calendar/blob/master/test.gif)
 
-아직 잔 버그들이 많습니다.
-
 ## 할일
 
+기능 구현은 종료
+1) 코드 정리
 
-1) 종료일은 시작 보다 무조건 커야함
-2) 선택했다는 표시
-3) 종일, 오늘
-4) SQLITE
-
+나머지 작업은 다른 저장소에서 진행 할 것 같아요.
+1) SQLite
+2) API 붙이기
